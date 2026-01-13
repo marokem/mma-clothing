@@ -4,7 +4,7 @@ const products = [
   {
     id: 1,
     name: "Elegant Evening Dress",
-
+    price: 89.99,
     image:
       "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=300&fit=crop&crop=center",
     category: "dresses",
@@ -290,6 +290,7 @@ document.addEventListener("DOMContentLoaded", function () {
   setupProductFilters();
   setupSearch();
   setupLoadMore();
+  setupMobileMenu();
   console.log("Initialization complete");
 });
 
@@ -548,6 +549,38 @@ function setupLoadMore() {
     currentPage++;
     displayProducts(false); // Don't reset page
   });
+}
+
+// Setup mobile menu
+function setupMobileMenu() {
+  const menuToggle = document.querySelector('.menu-toggle');
+  const mobileMenu = document.querySelector('.mobile-menu');
+  const closeMenu = document.querySelector('.close-menu');
+
+  if (menuToggle && mobileMenu) {
+    menuToggle.addEventListener('click', () => {
+      mobileMenu.classList.add('active');
+    });
+
+    closeMenu.addEventListener('click', () => {
+      mobileMenu.classList.remove('active');
+    });
+
+    // Close menu when clicking outside
+    mobileMenu.addEventListener('click', (e) => {
+      if (e.target === mobileMenu) {
+        mobileMenu.classList.remove('active');
+      }
+    });
+
+    // Close menu when clicking on links
+    const mobileLinks = mobileMenu.querySelectorAll('a');
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+      });
+    });
+  }
 }
 
 // Enhanced add to cart with better feedback
