@@ -351,7 +351,6 @@ function displayProducts(resetPage = true) {
       <div class="product-info">
         <h3>${product.name}</h3>
         <p class="product-description">${product.description}</p>
-        <p class="product-price">$${product.price.toFixed(2)}</p>
         <button class="add-to-cart" onclick="addToCart(${product.id})">
           <i class="fas fa-shopping-cart"></i> Add to Cart
         </button>
