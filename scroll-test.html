@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Header Scroll Test</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      header {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        position: fixed;
+        width: 100%;
+        top: 0;
+        z-index: 1000;
+        border-bottom: 1px solid rgba(233, 30, 99, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      header.scrolled {
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(15px);
+        border-bottom: 2px solid rgba(233, 30, 99, 0.2);
+      }
+
+      header .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
+        max-width: 1400px;
+        margin: 0 auto;
+        transition: all 0.3s ease;
+      }
+
+      header.scrolled .container {
+        padding: 15px 30px;
+      }
+
+      .logo h1 {
+        color: #e91e63;
+        font-weight: 800;
+        font-size: 1.8rem;
+        margin: 0;
+        background: linear-gradient(45deg, #e91e63, #f06292, #e91e63);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        animation: gradientShift 3s ease-in-out infinite;
+        letter-spacing: -0.5px;
+        transition: all 0.3s ease;
+      }
+
+      header.scrolled .logo h1 {
+        font-size: 1.5rem;
+      }
+
+      @keyframes gradientShift {
+        0%,
+        100% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+        gap: 30px;
+      }
+
+      nav a {
+        text-decoration: none;
+        color: #333;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        position: relative;
+      }
+
+      nav a:hover {
+        color: #e91e63;
+      }
+
+      nav a::after {
+        content: "";
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -5px;
+        left: 0;
+        background: linear-gradient(45deg, #e91e63, #f06292);
+        transition: width 0.3s ease;
+      }
+
+      nav a:hover::after {
+        width: 100%;
+      }
+
+      .content {
+        padding: 100px 20px;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      .section {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <h1>MMA Clothing</h1>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#products">Products</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <div class="content">
+      <div
+        class="section"
+        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+      >
+        <h2 style="color: white; font-size: 2rem">
+          Scroll down to see the header effect!
+        </h2>
+      </div>
+      <div
+        class="section"
+        style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%)"
+      >
+        <h2 style="color: white; font-size: 2rem">Keep scrolling...</h2>
+      </div>
+      <div
+        class="section"
+        style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)"
+      >
+        <h2 style="color: white; font-size: 2rem">
+          Header changes when scrolled!
+        </h2>
+      </div>
+      <div
+        class="section"
+        style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)"
+      >
+        <h2 style="color: white; font-size: 2rem">Beautiful scroll effects!</h2>
+      </div>
+    </div>
+
+    <script>
+      function setupHeaderScrollEffect() {
+        const header = document.querySelector("header");
+        window.addEventListener("scroll", function () {
+          if (window.scrollY > 50) {
+            header.classList.add("scrolled");
+          } else {
+            header.classList.remove("scrolled");
+          }
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", setupHeaderScrollEffect);
+    </script>
+  </body>
+</html>

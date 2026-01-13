@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MMA Clothing - Premium Female Fashion</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="container">
+        <div class="logo">
+          <h1>MMA Clothing</h1>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#categories">Categories</a></li>
+            <li><a href="#featured">Featured</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="cart-icon">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count">0</span>
+        </div>
+      </div>
+    </header>
+
+    <section id="home" class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <h2>Elegant Fashion for Every Woman</h2>
+          <p>
+            Discover the latest trends in female fashion. Quality, style, and
+            affordability in one place.
+          </p>
+          <a href="#featured" class="btn-primary">Shop Now</a>
+        </div>
+        <div class="hero-image">
+          <img
+            src="https://images.unsplash.com/photo-1445205170230-053b83016050?w=500&h=600&fit=crop&crop=center"
+            alt="Fashion Model"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section id="categories" class="categories">
+      <div class="container">
+        <h2>Shop by Category</h2>
+        <div class="category-grid">
+          <div class="category-card">
+            <img
+              src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=300&fit=crop&crop=center"
+              alt="Dresses"
+            />
+            <h3>Dresses</h3>
+            <p>Elegant and stylish dresses for every occasion</p>
+          </div>
+          <div class="category-card">
+            <img
+              src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop&crop=center"
+              alt="Tops"
+            />
+            <h3>Tops & Blouses</h3>
+            <p>Comfortable and fashionable tops</p>
+          </div>
+          <div class="category-card">
+            <img
+              src="https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop&crop=center"
+              alt="Bottoms"
+            />
+            <h3>Bottoms</h3>
+            <p>Skirts, pants, and jeans</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="featured" class="featured">
+      <div class="container">
+        <h2>Featured Products</h2>
+
+        <!-- Product Filters -->
+        <div class="product-filters">
+          <button class="filter-btn active" data-filter="all">
+            All Products
+          </button>
+          <button class="filter-btn" data-filter="dresses">Dresses</button>
+          <button class="filter-btn" data-filter="tops">Tops</button>
+          <button class="filter-btn" data-filter="bottoms">Bottoms</button>
+          <button class="filter-btn" data-filter="outerwear">Outerwear</button>
+          <button class="filter-btn" data-filter="shoes">Shoes</button>
+          <button class="filter-btn" data-filter="accessories">
+            Accessories
+          </button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+          <input
+            type="text"
+            id="product-search"
+            placeholder="Search for clothing..."
+            class="search-input"
+          />
+          <i class="fas fa-search search-icon"></i>
+        </div>
+
+        <div class="product-grid" id="product-grid">
+          <!-- Products will be populated by JavaScript -->
+        </div>
+
+        <!-- Load More Button -->
+        <div class="load-more-container">
+          <button id="load-more-btn" class="btn-primary">
+            Load More Products
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="about">
+      <div class="container">
+        <div class="about-content">
+          <h2>About MMA Clothing</h2>
+          <p>
+            At MMA Clothing, we believe that every woman deserves to feel
+            confident and beautiful in her clothes. Our curated collection
+            features the latest trends and timeless classics, all crafted with
+            quality materials and attention to detail.
+          </p>
+          <p>
+            We source our products from trusted manufacturers and ensure that
+            every piece meets our high standards for comfort, durability, and
+            style.
+          </p>
+          <div class="stats">
+            <div class="stat">
+              <h3>1000+</h3>
+              <p>Happy Customers</p>
+            </div>
+            <div class="stat">
+              <h3>500+</h3>
+              <p>Products</p>
+            </div>
+            <div class="stat">
+              <h3>50+</h3>
+              <p>Styles</p>
+            </div>
+          </div>
+        </div>
+        <div class="about-image">
+          <img
+            src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500&h=400&fit=crop&crop=center"
+            alt="MMA Clothing Store"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" class="contact">
+      <div class="container">
+        <h2>Contact Us</h2>
+        <div class="contact-content">
+          <div class="contact-info">
+            <div class="info-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <p>NO obosi street fegge onitsha</p>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-phone"></i>
+              <p>08100946653</p>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-envelope"></i>
+              <p>info@mmaclothing.com</p>
+            </div>
+            <div class="info-item">
+              <i class="fas fa-clock"></i>
+              <p>Mon-Fri: 9AM-8PM, Sat-Sun: 10AM-6PM</p>
+            </div>
+          </div>
+          <form class="contact-form">
+            <input type="text" placeholder="Your Name" required />
+            <input type="email" placeholder="Your Email" required />
+            <textarea placeholder="Your Message" rows="5" required></textarea>
+            <button type="submit" class="btn-primary">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section">
+            <h3>MMA Clothing</h3>
+            <p>Your destination for premium female fashion.</p>
+            <div class="social-links">
+              <a href="#"><i class="fab fa-facebook-f"></i></a>
+              <a href="#"><i class="fab fa-instagram"></i></a>
+              <a href="#"><i class="fab fa-twitter"></i></a>
+              <a href="#"><i class="fab fa-pinterest"></i></a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="#home">Home</a></li>
+              <li><a href="#categories">Categories</a></li>
+              <li><a href="#featured">Featured</a></li>
+              <li><a href="#about">About</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Customer Service</h3>
+            <ul>
+              <li><a href="#">Size Guide</a></li>
+              <li><a href="#">Shipping Info</a></li>
+              <li><a href="#">Returns</a></li>
+              <li><a href="#">FAQ</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2026 MMA Clothing. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
