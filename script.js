@@ -1,1152 +1,287 @@
-/**
- * MMA Clothing E-Commerce Website
- * Main JavaScript file with organized sections for better maintainability
- * Author: Maroke
- * Date: January 2026
- */
-
-// =============================================================================
-// CONFIGURATION & CONSTANTS
-// =============================================================================
-
-const CONFIG = {
-  productsPerPage: 12,
-  animationDuration: 300,
-  maxOrderNumberLength: 15,
-  notificationTimeout: 3000
-};
-
-// =============================================================================
-// DATA MANAGEMENT
-// =============================================================================
-
-/**
- * Product catalog data
- * Contains all available products with categories, pricing, and images
- */
+// Product data
 const products = [
-  // Dresses Category
+  // Dresses
   {
     id: 1,
     name: "Elegant Evening Dress",
     price: 89.99,
-    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=300&fit=crop&crop=center",
+    image:
+      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=300&fit=crop&crop=center",
     category: "dresses",
-    description: "Stunning evening dress perfect for special occasions"
+    description: "Stunning evening dress perfect for special occasions",
   },
   {
     id: 2,
     name: "Floral Maxi Dress",
     price: 69.99,
-    image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=300&fit=crop&crop=center",
+    image:
+      "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=300&h=300&fit=crop&crop=center",
     category: "dresses",
-    description: "Flowy floral maxi dress for casual elegance"
+    description: "Flowy floral maxi dress for casual elegance",
   },
   {
     id: 3,
     name: "Little Black Dress",
     price: 79.99,
-    image: "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=300&h=300&fit=crop&crop=center",
+    image:
+      "https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=300&h=300&fit=crop&crop=center",
     category: "dresses",
-    description: "Classic little black dress that never goes out of style"
+    description: "Classic little black dress that never goes out of style",
   },
   {
     id: 4,
     name: "Summer Sundress",
     price: 45.99,
-    image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=300&h=300&fit=crop&crop=center",
+    image:
+      "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=300&h=300&fit=crop&crop=center",
     category: "dresses",
-    description: "Light and breezy sundress for warm weather"
+    description: "Light and breezy sundress for warm weather",
   },
   {
     id: 5,
     name: "Cocktail Dress",
     price: 95.99,
-    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=300&fit=crop&crop=center",
+    image:
+      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=300&h=300&fit=crop&crop=center",
     category: "dresses",
-    description: "Sophisticated cocktail dress for evening events"
+    description: "Sophisticated cocktail dress for evening events",
   },
 
-  // Tops Category
+  // Tops
   {
     id: 6,
     name: "Casual Summer Top",
     price: 29.99,
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop&crop=center",
+    image:
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop&crop=center",
     category: "tops",
-    description: "Comfortable cotton top perfect for everyday wear"
+    description: "Comfortable cotton top perfect for everyday wear",
   },
   {
     id: 7,
     name: "Blouse with Ruffles",
     price: 39.99,
-    image: "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?w=300&h=300&fit=crop&crop=center",
+    image:
+      "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?w=300&h=300&fit=crop&crop=center",
     category: "tops",
-    description: "Elegant ruffled blouse for a feminine touch"
+    description: "Elegant ruffled blouse for a feminine touch",
   },
   {
     id: 8,
     name: "Silk Camisole",
     price: 34.99,
-    image: "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=300&h=300&fit=crop&crop=center",
+    image:
+      "https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=300&h=300&fit=crop&crop=center",
     category: "tops",
-    description: "Luxurious silk camisole for layering"
+    description: "Luxurious silk camisole for layering",
   },
   {
     id: 9,
     name: "Graphic Tee",
     price: 24.99,
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop&crop=center",
+    image:
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=300&h=300&fit=crop&crop=center",
     category: "tops",
-    description: "Trendy graphic t-shirt with modern design"
+    description: "Trendy graphic t-shirt with modern design",
   },
   {
     id: 10,
     name: "Button-Up Shirt",
     price: 49.99,
-    image: "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?w=300&h=300&fit=crop&crop=center",
+    image:
+      "https://images.unsplash.com/photo-1551107696-a4b0c5a0d9a2?w=300&h=300&fit=crop&crop=center",
     category: "tops",
-    description: "Classic button-up shirt for professional look"
+    description: "Classic button-up shirt for professional look",
   },
 
-  // Bottoms Category
+  // Bottoms
   {
     id: 11,
     name: "Designer Jeans",
-    price: 89.99,
-    image: "https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop&crop=center",
+    price: 79.99,
+    image:
+      "https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop&crop=center",
     category: "bottoms",
-    description: "Premium designer jeans with perfect fit"
+    description: "High-quality designer jeans with perfect fit",
   },
   {
     id: 12,
-    name: "High-Waisted Pants",
-    price: 59.99,
-    image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=300&fit=crop&crop=center",
+    name: "High-Waisted Skirt",
+    price: 49.99,
+    image:
+      "https://images.unsplash.com/photo-1583496661160-fb5886a6aaaa?w=300&h=300&fit=crop&crop=center",
     category: "bottoms",
-    description: "Stylish high-waisted pants for modern look"
+    description: "Flattering high-waisted skirt for any occasion",
   },
   {
     id: 13,
-    name: "Pleated Skirt",
-    price: 44.99,
-    image: "https://images.unsplash.com/photo-1583496661160-fb5886a6aaaa?w=300&h=300&fit=crop&crop=center",
+    name: "Tailored Trousers",
+    price: 69.99,
+    image:
+      "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=300&h=300&fit=crop&crop=center",
     category: "bottoms",
-    description: "Elegant pleated skirt for versatile styling"
+    description: "Professional tailored trousers for work",
   },
   {
     id: 14,
-    name: "Cargo Pants",
-    price: 54.99,
-    image: "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=300&h=300&fit=crop&crop=center",
+    name: "Denim Shorts",
+    price: 39.99,
+    image:
+      "https://images.unsplash.com/photo-1584464491033-06628f3a6b7b?w=300&h=300&fit=crop&crop=center",
     category: "bottoms",
-    description: "Functional cargo pants with multiple pockets"
+    description: "Casual denim shorts for summer days",
   },
   {
     id: 15,
-    name: "Tailored Shorts",
-    price: 39.99,
-    image: "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?w=300&h=300&fit=crop&crop=center",
+    name: "Leather Pants",
+    price: 89.99,
+    image:
+      "https://images.unsplash.com/photo-1542272604-787c3835535d?w=300&h=300&fit=crop&crop=center",
     category: "bottoms",
-    description: "Professional tailored shorts for smart casual"
+    description: "Edgy leather pants for bold fashion statements",
   },
 
-  // Accessories Category
+  // Accessories
   {
     id: 16,
-    name: "Designer Handbag",
-    price: 129.99,
-    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop&crop=center",
+    name: "Silk Scarf",
+    price: 24.99,
+    image:
+      "https://images.unsplash.com/photo-1601762603332-db5e4b90cc5d?w=300&h=300&fit=crop&crop=center",
     category: "accessories",
-    description: "Luxury designer handbag with premium materials"
+    description: "Elegant silk scarf to elevate any outfit",
   },
   {
     id: 17,
-    name: "Statement Earrings",
-    price: 24.99,
-    image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=300&h=300&fit=crop&crop=center",
+    name: "Pearl Necklace",
+    price: 34.99,
+    image:
+      "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=300&h=300&fit=crop&crop=center",
     category: "accessories",
-    description: "Bold statement earrings to elevate any outfit"
+    description: "Classic pearl necklace for timeless elegance",
   },
   {
     id: 18,
-    name: "Silk Scarf",
-    price: 34.99,
-    image: "https://images.unsplash.com/photo-1601762603339-fd61e28b698a?w=300&h=300&fit=crop&crop=center",
+    name: "Designer Handbag",
+    price: 129.99,
+    image:
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop&crop=center",
     category: "accessories",
-    description: "Elegant silk scarf for sophisticated styling"
+    description: "Luxury designer handbag for special occasions",
   },
   {
     id: 19,
-    name: "Leather Belt",
+    name: "Gold Earrings",
     price: 29.99,
-    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop&crop=center",
+    image:
+      "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=300&h=300&fit=crop&crop=center",
     category: "accessories",
-    description: "Genuine leather belt with classic buckle"
+    description: "Beautiful gold earrings to complete your look",
   },
   {
     id: 20,
-    name: "Sunglasses",
-    price: 79.99,
-    image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=300&h=300&fit=crop&crop=center",
+    name: "Leather Belt",
+    price: 39.99,
+    image:
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=300&h=300&fit=crop&crop=center",
     category: "accessories",
-    description: "Designer sunglasses with UV protection"
-  }
+    description: "Stylish leather belt for versatile styling",
+  },
+
+  // Outerwear
+  {
+    id: 21,
+    name: "Wool Coat",
+    price: 149.99,
+    image:
+      "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=300&h=300&fit=crop&crop=center",
+    category: "outerwear",
+    description: "Warm wool coat for winter elegance",
+  },
+  {
+    id: 22,
+    name: "Denim Jacket",
+    price: 79.99,
+    image:
+      "https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=300&h=300&fit=crop&crop=center",
+    category: "outerwear",
+    description: "Classic denim jacket for casual style",
+  },
+  {
+    id: 23,
+    name: "Trench Coat",
+    price: 119.99,
+    image:
+      "https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=300&h=300&fit=crop&crop=center",
+    category: "outerwear",
+    description: "Timeless trench coat for sophisticated looks",
+  },
+  {
+    id: 24,
+    name: "Bomber Jacket",
+    price: 89.99,
+    image:
+      "https://images.unsplash.com/photo-1551537482-f2075a1d41f2?w=300&h=300&fit=crop&crop=center",
+    category: "outerwear",
+    description: "Stylish bomber jacket for modern fashion",
+  },
+
+  // Shoes
+  {
+    id: 25,
+    name: "High Heels",
+    price: 99.99,
+    image:
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=300&h=300&fit=crop&crop=center",
+    category: "shoes",
+    description: "Elegant high heels for special occasions",
+  },
+  {
+    id: 26,
+    name: "Sneakers",
+    price: 79.99,
+    image:
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop&crop=center",
+    category: "shoes",
+    description: "Comfortable sneakers for everyday wear",
+  },
+  {
+    id: 27,
+    name: "Ankle Boots",
+    price: 109.99,
+    image:
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=300&h=300&fit=crop&crop=center",
+    category: "shoes",
+    description: "Stylish ankle boots for versatile styling",
+  },
+  {
+    id: 28,
+    name: "Sandals",
+    price: 49.99,
+    image:
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=300&h=300&fit=crop&crop=center",
+    category: "shoes",
+    description: "Comfortable sandals for warm weather",
+  },
 ];
 
-// =============================================================================
-// STATE MANAGEMENT
-// =============================================================================
-
-/**
- * Global state variables for application functionality
- */
-let cart = JSON.parse(localStorage.getItem("shoppingCart")) || [];
-let reviews = JSON.parse(localStorage.getItem("productReviews")) || {};
-let wishlist = JSON.parse(localStorage.getItem("productWishlist")) || [];
-let orders = JSON.parse(localStorage.getItem("userOrders")) || [];
+let cart = [];
+let currentFilter = "all";
 let searchQuery = "";
+let productsPerPage = 12;
 let currentPage = 1;
 
-// =============================================================================
-// UTILITY FUNCTIONS
-// =============================================================================
+// Review Management
+let reviews = JSON.parse(localStorage.getItem("productReviews")) || {};
 
-/**
- * Format currency values for display
- * @param {number} amount - The amount to format
- * @returns {string} Formatted currency string
- */
-function formatCurrency(amount) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
-  }).format(amount);
-}
+// Wishlist Management
+let wishlist = JSON.parse(localStorage.getItem("productWishlist")) || [];
 
-/**
- * Format date for display
- * @param {Date} date - Date object to format
- * @returns {string} Formatted date string
- */
-function formatDate(date) {
-  return date.toLocaleDateString('en-US', {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
-}
-
-/**
- * Show notification to user
- * @param {string} message - Message to display
- * @param {string} type - Type of notification (success, error, info)
- */
-function showNotification(message, type = 'info') {
-  // Remove existing notifications
-  const existingNotifications = document.querySelectorAll('.notification');
-  existingNotifications.forEach(notification => notification.remove());
-
-  const notification = document.createElement('div');
-  notification.className = `notification ${type}`;
-  notification.innerHTML = `
-    <i class="fas ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
-    <span>${message}</span>
-  `;
-
-  document.body.appendChild(notification);
-
-  // Animate in
-  setTimeout(() => notification.classList.add('show'), 10);
-
-  // Auto remove after timeout
-  setTimeout(() => {
-    notification.classList.remove('show');
-    setTimeout(() => {
-      if (notification.parentNode) {
-        notification.parentNode.removeChild(notification);
-      }
-    }, 300);
-  }, CONFIG.notificationTimeout);
-}
-
-/**
- * Save data to localStorage
- * @param {string} key - Storage key
- * @param {*} data - Data to store
- */
-function saveToStorage(key, data) {
-  try {
-    localStorage.setItem(key, JSON.stringify(data));
-  } catch (error) {
-    console.error('Error saving to localStorage:', error);
-  }
-}
-
-/**
- * Load data from localStorage
- * @param {string} key - Storage key
- * @param {*} defaultValue - Default value if key doesn't exist
- * @returns {*} Retrieved data or default value
- */
-function loadFromStorage(key, defaultValue = null) {
-  try {
-    const item = localStorage.getItem(key);
-    return item ? JSON.parse(item) : defaultValue;
-  } catch (error) {
-    console.error('Error loading from localStorage:', error);
-    return defaultValue;
-  }
-}
-
-// =============================================================================
-// THEME MANAGEMENT
-// =============================================================================
-
-/**
- * Toggle between light and dark themes
- */
-function toggleTheme() {
-  const currentTheme = document.documentElement.getAttribute('data-theme');
-  const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-  document.documentElement.setAttribute('data-theme', newTheme);
-  saveToStorage('theme', newTheme);
-
-  // Update theme toggle icon
-  const themeIcon = document.querySelector('.theme-toggle i');
-  if (themeIcon) {
-    themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-  }
-
-  showNotification(`Switched to ${newTheme} mode`);
-}
-
-/**
- * Initialize theme on page load
- */
-function initializeTheme() {
-  const savedTheme = loadFromStorage('theme', 'light');
-  document.documentElement.setAttribute('data-theme', savedTheme);
-
-  const themeIcon = document.querySelector('.theme-toggle i');
-  if (themeIcon) {
-    themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-  }
-}
-
-// =============================================================================
-// PRODUCT DISPLAY & FILTERING
-// =============================================================================
-
-/**
- * Get filtered products based on current search and category filters
- * @returns {Array} Filtered products array
- */
-function getFilteredProducts() {
-  let filtered = products;
-
-  // Apply search filter
-  if (searchQuery) {
-    filtered = filtered.filter(product =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.category.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }
-
-  // Apply category filter
-  const activeCategory = document.querySelector('.category-filter.active');
-  if (activeCategory && activeCategory.dataset.category !== 'all') {
-    filtered = filtered.filter(product => product.category === activeCategory.dataset.category);
-  }
-
-  return filtered;
-}
-
-/**
- * Render products grid with pagination
- */
-function renderProducts() {
-  const filteredProducts = getFilteredProducts();
-  const startIndex = (currentPage - 1) * CONFIG.productsPerPage;
-  const endIndex = startIndex + CONFIG.productsPerPage;
-  const productsToShow = filteredProducts.slice(startIndex, endIndex);
-
-  const productsGrid = document.getElementById('products-grid');
-  if (!productsGrid) return;
-
-  if (productsToShow.length === 0) {
-    productsGrid.innerHTML = `
-      <div class="no-products">
-        <i class="fas fa-search"></i>
-        <h3>No products found</h3>
-        <p>Try adjusting your search or filters</p>
-      </div>
-    `;
-  } else {
-    productsGrid.innerHTML = productsToShow.map(product => `
-      <div class="product-card" data-id="${product.id}">
-        <div class="product-image">
-          <img src="${product.image}" alt="${product.name}" loading="lazy">
-          <div class="product-actions">
-            <button class="wishlist-btn ${wishlist.some(item => item.id === product.id) ? 'active' : ''}"
-                    onclick="toggleWishlist(${product.id})">
-              <i class="fas fa-heart"></i>
-            </button>
-            <button class="quick-view-btn" onclick="openProductModal(${product.id})">
-              <i class="fas fa-eye"></i>
-            </button>
-          </div>
-          <div class="product-badge">New</div>
-        </div>
-        <div class="product-info">
-          <h3 class="product-name">${product.name}</h3>
-          <p class="product-description">${product.description}</p>
-          <div class="product-rating">
-            ${renderStarRating(product.id)}
-          </div>
-          <div class="product-price">
-            <span class="price">${formatCurrency(product.price)}</span>
-          </div>
-          <button class="btn-primary add-to-cart-btn" onclick="addToCart(${product.id})">
-            <i class="fas fa-cart-plus"></i> Add to Cart
-          </button>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  renderPagination(filteredProducts.length);
-}
-
-/**
- * Render pagination controls
- * @param {number} totalProducts - Total number of products
- */
-function renderPagination(totalProducts) {
-  const totalPages = Math.ceil(totalProducts / CONFIG.productsPerPage);
-  const paginationContainer = document.getElementById('pagination');
-
-  if (!paginationContainer || totalPages <= 1) {
-    if (paginationContainer) paginationContainer.innerHTML = '';
-    return;
-  }
-
-  let paginationHTML = '';
-
-  // Previous button
-  paginationHTML += `
-    <button class="page-btn" onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-      <i class="fas fa-chevron-left"></i>
-    </button>
-  `;
-
-  // Page numbers
-  const startPage = Math.max(1, currentPage - 2);
-  const endPage = Math.min(totalPages, currentPage + 2);
-
-  if (startPage > 1) {
-    paginationHTML += `<button class="page-btn" onclick="changePage(1)">1</button>`;
-    if (startPage > 2) {
-      paginationHTML += `<span class="pagination-dots">...</span>`;
-    }
-  }
-
-  for (let i = startPage; i <= endPage; i++) {
-    paginationHTML += `
-      <button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">
-        ${i}
-      </button>
-    `;
-  }
-
-  if (endPage < totalPages) {
-    if (endPage < totalPages - 1) {
-      paginationHTML += `<span class="pagination-dots">...</span>`;
-    }
-    paginationHTML += `<button class="page-btn" onclick="changePage(${totalPages})">${totalPages}</button>`;
-  }
-
-  // Next button
-  paginationHTML += `
-    <button class="page-btn" onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-      <i class="fas fa-chevron-right"></i>
-    </button>
-  `;
-
-  paginationContainer.innerHTML = paginationHTML;
-}
-
-/**
- * Change current page
- * @param {number} page - Page number to navigate to
- */
-function changePage(page) {
-  const filteredProducts = getFilteredProducts();
-  const totalPages = Math.ceil(filteredProducts.length / CONFIG.productsPerPage);
-
-  if (page < 1 || page > totalPages) return;
-
-  currentPage = page;
-  renderProducts();
-
-  // Scroll to top of products
-  document.getElementById('products-grid').scrollIntoView({ behavior: 'smooth' });
-}
-
-/**
- * Filter products by category
- * @param {string} category - Category to filter by
- */
-function filterByCategory(category) {
-  // Update active category button
-  document.querySelectorAll('.category-filter').forEach(btn => {
-    btn.classList.remove('active');
-  });
-  document.querySelector(`[data-category="${category}"]`).classList.add('active');
-
-  currentPage = 1;
-  renderProducts();
-}
-
-/**
- * Search products
- * @param {string} query - Search query
- */
-function searchProducts(query) {
-  searchQuery = query.trim();
-  currentPage = 1;
-  renderProducts();
-}
-
-// =============================================================================
-// SHOPPING CART MANAGEMENT
-// =============================================================================
-
-/**
- * Add product to cart
- * @param {number} productId - ID of product to add
- */
-function addToCart(productId) {
-  const product = products.find(p => p.id === productId);
-  if (!product) return;
-
-  const existingItem = cart.find(item => item.id === productId);
-
-  if (existingItem) {
-    existingItem.quantity += 1;
-  } else {
-    cart.push({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      quantity: 1
-    });
-  }
-
-  saveToStorage('shoppingCart', cart);
-  updateCartCount();
-  showNotification(`${product.name} added to cart`);
-}
-
-/**
- * Update cart item count display
- */
-function updateCartCount() {
-  const cartCount = document.getElementById('cart-count');
-  if (cartCount) {
-    const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-    cartCount.textContent = totalItems;
-    cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
-  }
-}
-
-/**
- * Toggle cart modal visibility
- */
-function toggleCart() {
-  const cartModal = document.getElementById('cart-modal');
-  if (cartModal) {
-    cartModal.classList.toggle('active');
-    if (cartModal.classList.contains('active')) {
-      renderCartItems();
-    }
-  }
-}
-
-/**
- * Render cart items in modal
- */
-function renderCartItems() {
-  const cartItems = document.getElementById('cart-items');
-  const cartTotal = document.getElementById('cart-total');
-
-  if (!cartItems || !cartTotal) return;
-
-  if (cart.length === 0) {
-    cartItems.innerHTML = `
-      <div class="empty-cart">
-        <i class="fas fa-shopping-cart"></i>
-        <h3>Your cart is empty</h3>
-        <p>Add some products to get started!</p>
-      </div>
-    `;
-    cartTotal.textContent = formatCurrency(0);
-    return;
-  }
-
-  cartItems.innerHTML = cart.map(item => `
-    <div class="cart-item">
-      <img src="${item.image}" alt="${item.name}" class="cart-item-image">
-      <div class="cart-item-details">
-        <h4 class="cart-item-name">${item.name}</h4>
-        <div class="cart-item-price">${formatCurrency(item.price)}</div>
-        <div class="cart-item-quantity">
-          <button onclick="updateCartQuantity(${item.id}, ${item.quantity - 1})">-</button>
-          <span>${item.quantity}</span>
-          <button onclick="updateCartQuantity(${item.id}, ${item.quantity + 1})">+</button>
-        </div>
-      </div>
-      <button class="cart-item-remove" onclick="removeFromCart(${item.id})">
-        <i class="fas fa-trash"></i>
-      </button>
-    </div>
-  `).join('');
-
-  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  cartTotal.textContent = formatCurrency(total);
-}
-
-/**
- * Update cart item quantity
- * @param {number} productId - Product ID
- * @param {number} newQuantity - New quantity value
- */
-function updateCartQuantity(productId, newQuantity) {
-  if (newQuantity <= 0) {
-    removeFromCart(productId);
-    return;
-  }
-
-  const item = cart.find(item => item.id === productId);
-  if (item) {
-    item.quantity = newQuantity;
-    saveToStorage('shoppingCart', cart);
-    renderCartItems();
-    updateCartCount();
-  }
-}
-
-/**
- * Remove item from cart
- * @param {number} productId - Product ID to remove
- */
-function removeFromCart(productId) {
-  const itemIndex = cart.findIndex(item => item.id === productId);
-  if (itemIndex > -1) {
-    const item = cart[itemIndex];
-    cart.splice(itemIndex, 1);
-    saveToStorage('shoppingCart', cart);
-    renderCartItems();
-    updateCartCount();
-    showNotification(`${item.name} removed from cart`);
-  }
-}
-
-/**
- * Clear entire cart
- */
-function clearCart() {
-  cart = [];
-  saveToStorage('shoppingCart', cart);
-  renderCartItems();
-  updateCartCount();
-  showNotification('Cart cleared');
-}
-
-// =============================================================================
-// CHECKOUT SYSTEM
-// =============================================================================
-
-/**
- * Open checkout modal
- */
-function openCheckout() {
-  if (cart.length === 0) {
-    showNotification('Your cart is empty', 'error');
-    return;
-  }
-
-  const checkoutModal = document.createElement('div');
-  checkoutModal.className = 'checkout-modal';
-  checkoutModal.innerHTML = `
-    <div class="checkout-content">
-      <div class="checkout-header">
-        <h3>Checkout</h3>
-        <span class="close-checkout">&times;</span>
-      </div>
-      <div class="checkout-body">
-        <div class="checkout-summary">
-          <h4>Order Summary</h4>
-          <div id="checkout-items"></div>
-          <div class="checkout-total">
-            <span>Total: <strong id="checkout-total-amount"></strong></span>
-          </div>
-        </div>
-        <form class="checkout-form" id="checkout-form">
-          <h4>Shipping Information</h4>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="first-name">First Name *</label>
-              <input type="text" id="first-name" required>
-            </div>
-            <div class="form-group">
-              <label for="last-name">Last Name *</label>
-              <input type="text" id="last-name" required>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="email">Email Address *</label>
-            <input type="email" id="email" required>
-          </div>
-          <div class="form-group">
-            <label for="phone">Phone Number</label>
-            <input type="tel" id="phone">
-          </div>
-          <div class="form-group">
-            <label for="address">Street Address *</label>
-            <input type="text" id="address" required>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="city">City *</label>
-              <input type="text" id="city" required>
-            </div>
-            <div class="form-group">
-              <label for="zip">ZIP Code *</label>
-              <input type="text" id="zip" required>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="country">Country *</label>
-            <select id="country" required>
-              <option value="">Select Country</option>
-              <option value="US">United States</option>
-              <option value="CA">Canada</option>
-              <option value="UK">United Kingdom</option>
-            </select>
-          </div>
-
-          <h4>Payment Information</h4>
-          <div class="form-group">
-            <label for="card-number">Card Number *</label>
-            <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label for="expiry">Expiry Date *</label>
-              <input type="text" id="expiry" placeholder="MM/YY" required>
-            </div>
-            <div class="form-group">
-              <label for="cvv">CVV *</label>
-              <input type="text" id="cvv" placeholder="123" required>
-            </div>
-          </div>
-
-          <div class="checkout-actions">
-            <button type="button" class="btn-secondary" onclick="closeCheckout()">Cancel</button>
-            <button type="submit" class="btn-primary">Place Order</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(checkoutModal);
-
-  // Render checkout items
-  renderCheckoutItems();
-
-  // Close modal functionality
-  checkoutModal.querySelector('.close-checkout').addEventListener('click', closeCheckout);
-  checkoutModal.addEventListener('click', (e) => {
-    if (e.target === checkoutModal) closeCheckout();
-  });
-
-  // Form submission
-  checkoutModal.querySelector('#checkout-form').addEventListener('submit', handleCheckoutSubmit);
-}
-
-/**
- * Render checkout items summary
- */
-function renderCheckoutItems() {
-  const checkoutItems = document.getElementById('checkout-items');
-  const checkoutTotal = document.getElementById('checkout-total-amount');
-
-  if (!checkoutItems || !checkoutTotal) return;
-
-  checkoutItems.innerHTML = cart.map(item => `
-    <div class="checkout-item">
-      <img src="${item.image}" alt="${item.name}">
-      <div class="checkout-item-details">
-        <h5>${item.name}</h5>
-        <span>${formatCurrency(item.price)} × ${item.quantity}</span>
-      </div>
-      <div class="checkout-item-total">${formatCurrency(item.price * item.quantity)}</div>
-    </div>
-  `).join('');
-
-  const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  checkoutTotal.textContent = formatCurrency(total);
-}
-
-/**
- * Handle checkout form submission
- * @param {Event} e - Form submit event
- */
-function handleCheckoutSubmit(e) {
-  e.preventDefault();
-
-  // Get form data
-  const formData = {
-    firstName: document.getElementById('first-name').value,
-    lastName: document.getElementById('last-name').value,
-    email: document.getElementById('email').value,
-    phone: document.getElementById('phone').value,
-    address: document.getElementById('address').value,
-    city: document.getElementById('city').value,
-    zip: document.getElementById('zip').value,
-    country: document.getElementById('country').value,
-    cardNumber: document.getElementById('card-number').value,
-    expiry: document.getElementById('expiry').value,
-    cvv: document.getElementById('cvv').value
-  };
-
-  // Basic validation
-  if (!formData.firstName || !formData.lastName || !formData.email || !formData.address || !formData.city || !formData.zip || !formData.country) {
-    showNotification('Please fill in all required fields', 'error');
-    return;
-  }
-
-  // Process order
-  processOrder(formData);
-}
-
-/**
- * Process the order and show confirmation
- * @param {Object} formData - Customer and payment information
- */
-function processOrder(formData) {
-  // Generate order number
-  const orderNumber = 'MMA' + Date.now().toString().slice(-9);
-
-  // Create order object
-  const order = {
-    orderNumber,
-    date: new Date(),
-    items: [...cart],
-    customer: {
-      name: `${formData.firstName} ${formData.lastName}`,
-      email: formData.email,
-      phone: formData.phone,
-      address: {
-        street: formData.address,
-        city: formData.city,
-        zip: formData.zip,
-        country: formData.country
-      }
-    },
-    total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-    status: 'confirmed'
-  };
-
-  // Save order
-  orders.push(order);
-  saveToStorage('userOrders', orders);
-
-  // Clear cart
-  cart = [];
-  saveToStorage('shoppingCart', cart);
-  updateCartCount();
-
-  // Close checkout modal
-  closeCheckout();
-
-  // Show order confirmation
-  showOrderConfirmation(order);
-}
-
-/**
- * Close checkout modal
- */
-function closeCheckout() {
-  const checkoutModal = document.querySelector('.checkout-modal');
-  if (checkoutModal) {
-    checkoutModal.remove();
-  }
-}
-
-/**
- * Show order confirmation modal
- * @param {Object} order - Order details
- */
-function showOrderConfirmation(order) {
-  const confirmationModal = document.createElement('div');
-  confirmationModal.className = 'order-confirmation-modal';
-  confirmationModal.innerHTML = `
-    <div class="order-confirmation-content">
-      <div class="confirmation-header">
-        <i class="fas fa-check-circle"></i>
-        <h3>Order Confirmed!</h3>
-        <p>Thank you for your purchase</p>
-      </div>
-      <div class="confirmation-details">
-        <div class="confirmation-item">
-          <span class="label">Order Number:</span>
-          <span class="value">${order.orderNumber}</span>
-        </div>
-        <div class="confirmation-item">
-          <span class="label">Total Amount:</span>
-          <span class="value">${formatCurrency(order.total)}</span>
-        </div>
-        <div class="confirmation-item">
-          <span class="label">Estimated Delivery:</span>
-          <span class="value">${formatDate(new Date(Date.now() + 5 * 24 * 60 * 60 * 1000))}</span>
-        </div>
-      </div>
-      <div class="confirmation-actions">
-        <button class="btn-secondary" onclick="closeOrderConfirmation()">Continue Shopping</button>
-        <button class="btn-primary" onclick="openOrderTracking()">Track Order</button>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(confirmationModal);
-
-  // Auto close after 10 seconds
-  setTimeout(() => {
-    closeOrderConfirmation();
-  }, 10000);
-}
-
-/**
- * Close order confirmation modal
- */
-function closeOrderConfirmation() {
-  const confirmationModal = document.querySelector('.order-confirmation-modal');
-  if (confirmationModal) {
-    confirmationModal.remove();
-  }
-}
-
-// =============================================================================
-// REVIEW SYSTEM
-// =============================================================================
-
-/**
- * Render star rating for a product
- * @param {number} productId - Product ID
- * @returns {string} HTML string for star rating
- */
-function renderStarRating(productId) {
-  const productReviews = reviews[productId] || [];
-  const averageRating = productReviews.length > 0
-    ? productReviews.reduce((sum, review) => sum + review.rating, 0) / productReviews.length
-    : 0;
-
-  const fullStars = Math.floor(averageRating);
-  const hasHalfStar = averageRating % 1 >= 0.5;
-  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-
-  let starsHTML = '';
-
-  // Full stars
-  for (let i = 0; i < fullStars; i++) {
-    starsHTML += '<i class="fas fa-star"></i>';
-  }
-
-  // Half star
-  if (hasHalfStar) {
-    starsHTML += '<i class="fas fa-star-half-alt"></i>';
-  }
-
-  // Empty stars
-  for (let i = 0; i < emptyStars; i++) {
-    starsHTML += '<i class="far fa-star"></i>';
-  }
-
-  return `
-    <div class="stars" onclick="openReviewModal(${productId})">
-      ${starsHTML}
-      <span class="rating-count">(${productReviews.length})</span>
-    </div>
-  `;
-}
-
-/**
- * Open review modal for a product
- * @param {number} productId - Product ID
- */
-function openReviewModal(productId) {
-  const product = products.find(p => p.id === productId);
-  if (!product) return;
-
-  const modal = document.createElement('div');
-  modal.className = 'review-modal';
-  modal.innerHTML = `
-    <div class="review-modal-content">
-      <div class="review-modal-header">
-        <h3>Reviews for ${product.name}</h3>
-        <span class="close-review">&times;</span>
-      </div>
-      <div class="review-modal-body">
-        <div class="review-form">
-          <h4>Write a Review</h4>
-          <div class="rating-input">
-            <span>Your Rating:</span>
-            <div class="stars-input">
-              ${[1, 2, 3, 4, 5].map(num => `
-                <i class="far fa-star" data-rating="${num}" onclick="setRating(${num})"></i>
-              `).join('')}
-            </div>
-          </div>
-          <textarea id="review-text" placeholder="Share your thoughts about this product..." rows="4"></textarea>
-          <button class="btn-primary" onclick="submitReview(${productId})">Submit Review</button>
-        </div>
-        <div class="reviews-list" id="reviews-list">
-          <!-- Reviews will be loaded here -->
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(modal);
-
-  // Load existing reviews
-  loadReviews(productId);
-
-  // Close modal functionality
-  modal.querySelector('.close-review').addEventListener('click', () => modal.remove());
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.remove();
-  });
-}
-
-/**
- * Set rating in review form
- * @param {number} rating - Rating value (1-5)
- */
-function setRating(rating) {
-  const stars = document.querySelectorAll('.stars-input i');
-  stars.forEach((star, index) => {
-    if (index < rating) {
-      star.className = 'fas fa-star';
-    } else {
-      star.className = 'far fa-star';
-    }
-  });
-
-  // Store rating for submission
-  document.querySelector('.stars-input').dataset.selectedRating = rating;
-}
-
-/**
- * Submit a new review
- * @param {number} productId - Product ID
- */
-function submitReview(productId) {
-  const rating = document.querySelector('.stars-input').dataset.selectedRating;
-  const reviewText = document.getElementById('review-text').value.trim();
-
-  if (!rating) {
-    showNotification('Please select a rating', 'error');
-    return;
-  }
-
-  if (!reviewText) {
-    showNotification('Please write a review', 'error');
-    return;
-  }
-
-  // Initialize reviews array for product if it doesn't exist
-  if (!reviews[productId]) {
-    reviews[productId] = [];
-  }
-
-  // Add new review
-  reviews[productId].push({
-    id: Date.now(),
-    rating: parseInt(rating),
-    text: reviewText,
-    date: new Date().toISOString(),
-    author: 'Anonymous' // In a real app, this would be the logged-in user
-  });
-
-  // Save to localStorage
-  saveToStorage('productReviews', reviews);
-
-  // Clear form
-  document.getElementById('review-text').value = '';
-  setRating(0);
-
-  // Reload reviews
-  loadReviews(productId);
-
-  // Update product display
-  renderProducts();
-
-  showNotification('Review submitted successfully');
-}
-
-/**
- * Load and display reviews for a product
- * @param {number} productId - Product ID
- */
-function loadReviews(productId) {
-  const reviewsList = document.getElementById('reviews-list');
-  if (!reviewsList) return;
-
-  const productReviews = reviews[productId] || [];
-
-  if (productReviews.length === 0) {
-    reviewsList.innerHTML = '<p class="no-reviews">No reviews yet. Be the first to review this product!</p>';
-    return;
-  }
-
-  reviewsList.innerHTML = productReviews.map(review => `
-    <div class="review-item">
-      <div class="review-header">
-        <div class="review-rating">
-          ${[1, 2, 3, 4, 5].map(num => `
-            <i class="${num <= review.rating ? 'fas' : 'far'} fa-star"></i>
-          `).join('')}
-        </div>
-        <div class="review-date">${formatDate(new Date(review.date))}</div>
-      </div>
-      <div class="review-author">${review.author}</div>
-      <div class="review-text">${review.text}</div>
-    </div>
-  `).join('');
-}
-
-// =============================================================================
-// WISHLIST MANAGEMENT
-// =============================================================================
-
-/**
- * Toggle product in wishlist
- * @param {number} productId - Product ID
- */
 function toggleWishlist(productId) {
-  const product = products.find(p => p.id === productId);
+  const product = products.find((p) => p.id === productId);
   if (!product) return;
 
-  const index = wishlist.findIndex(item => item.id === productId);
+  const index = wishlist.findIndex((item) => item.id === productId);
 
   if (index > -1) {
     // Remove from wishlist
@@ -1161,102 +296,283 @@ function toggleWishlist(productId) {
       image: product.image,
       category: product.category,
       description: product.description,
-      addedDate: new Date().toISOString()
+      addedDate: new Date().toISOString(),
     });
-    showNotification(`${product.name} added to wishlist`);
+    showNotification(`${product.name} added to wishlist ❤️`);
   }
 
-  saveToStorage('productWishlist', wishlist);
-  renderProducts(); // Update wishlist buttons
+  // Save to localStorage
+  localStorage.setItem("productWishlist", JSON.stringify(wishlist));
+
+  // Update UI
+  updateWishlistButtons();
+  updateWishlistCount();
 }
 
-/**
- * Open wishlist modal
- */
+function isInWishlist(productId) {
+  return wishlist.some((item) => item.id === productId);
+}
+
+function updateWishlistButtons() {
+  document.querySelectorAll(".wishlist-btn").forEach((btn) => {
+    const productId = parseInt(btn.dataset.product);
+    const isWishlisted = isInWishlist(productId);
+
+    btn.classList.toggle("active", isWishlisted);
+    btn.querySelector("i").className = isWishlisted
+      ? "fas fa-heart"
+      : "far fa-heart";
+  });
+}
+
+function updateWishlistCount() {
+  const wishlistCount = wishlist.length;
+  const wishlistCountElement = document.querySelector(".wishlist-count");
+  if (wishlistCountElement) {
+    wishlistCountElement.textContent = wishlistCount;
+    wishlistCountElement.style.display = wishlistCount > 0 ? "inline" : "none";
+  }
+}
+
 function openWishlistModal() {
-  const modal = document.createElement('div');
-  modal.className = 'wishlist-modal';
+  const modal = document.createElement("div");
+  modal.className = "wishlist-modal";
   modal.innerHTML = `
     <div class="wishlist-modal-content">
-      <div class="wishlist-modal-header">
-        <h3>My Wishlist</h3>
+      <div class="wishlist-header">
+        <h3>My Wishlist ❤️</h3>
         <span class="close-wishlist">&times;</span>
       </div>
-      <div class="wishlist-modal-body">
-        <div class="wishlist-stats">
-          <span>${wishlist.length} items in wishlist</span>
-        </div>
-        <div class="wishlist-items" id="wishlist-items">
-          <!-- Wishlist items will be loaded here -->
-        </div>
+      <div class="wishlist-body">
+        ${
+          wishlist.length === 0
+            ? `<div class="empty-wishlist">
+              <i class="far fa-heart"></i>
+              <h4>Your wishlist is empty</h4>
+              <p>Add items you love to your wishlist!</p>
+              <button class="btn-primary" onclick="this.closest('.wishlist-modal').remove()">Continue Shopping</button>
+            </div>`
+            : `<div class="wishlist-grid">
+              ${wishlist
+                .map(
+                  (item) => `
+                <div class="wishlist-item">
+                  <div class="wishlist-item-image">
+                    <img src="${item.image}" alt="${item.name}">
+                  </div>
+                  <div class="wishlist-item-info">
+                    <h4>${item.name}</h4>
+                    <p class="wishlist-item-price">$${item.price.toFixed(2)}</p>
+                    <p class="wishlist-item-description">${item.description}</p>
+                    <div class="wishlist-item-rating">
+                      <div class="stars">
+                        ${renderStarRating(getProductRating(item.id))}
+                      </div>
+                      <span class="review-count">(${getProductReviewCount(
+                        item.id
+                      )})</span>
+                    </div>
+                  </div>
+                  <div class="wishlist-item-actions">
+                    <button class="btn-primary add-to-cart-wishlist" onclick="addToCart(${
+                      item.id
+                    }); this.closest('.wishlist-modal').remove()">
+                      <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                    <button class="btn-secondary remove-wishlist" onclick="toggleWishlist(${
+                      item.id
+                    })">
+                      <i class="fas fa-trash"></i> Remove
+                    </button>
+                  </div>
+                </div>
+              `
+                )
+                .join("")}
+            </div>`
+        }
       </div>
     </div>
   `;
 
   document.body.appendChild(modal);
 
-  // Load wishlist items
-  renderWishlistItems();
-
   // Close modal functionality
-  modal.querySelector('.close-wishlist').addEventListener('click', () => modal.remove());
-  modal.addEventListener('click', (e) => {
+  modal
+    .querySelector(".close-wishlist")
+    .addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (e) => {
     if (e.target === modal) modal.remove();
   });
 }
 
-/**
- * Render wishlist items
- */
-function renderWishlistItems() {
-  const wishlistItems = document.getElementById('wishlist-items');
-
-  if (!wishlistItems) return;
-
-  if (wishlist.length === 0) {
-    wishlistItems.innerHTML = `
-      <div class="empty-wishlist">
-        <i class="fas fa-heart"></i>
-        <h3>Your wishlist is empty</h3>
-        <p>Add items you love to your wishlist!</p>
-      </div>
-    `;
-    return;
-  }
-
-  wishlistItems.innerHTML = wishlist.map(item => `
-    <div class="wishlist-item">
-      <img src="${item.image}" alt="${item.name}" class="wishlist-item-image">
-      <div class="wishlist-item-details">
-        <h4 class="wishlist-item-name">${item.name}</h4>
-        <p class="wishlist-item-description">${item.description}</p>
-        <div class="wishlist-item-price">${formatCurrency(item.price)}</div>
-        <div class="wishlist-item-rating">
-          ${renderStarRating(item.id)}
-        </div>
-      </div>
-      <div class="wishlist-item-actions">
-        <button class="btn-primary" onclick="addToCart(${item.id}); toggleWishlist(${item.id})">
-          <i class="fas fa-cart-plus"></i> Add to Cart
-        </button>
-        <button class="btn-secondary remove-wishlist" onclick="toggleWishlist(${item.id})">
-          <i class="fas fa-trash"></i> Remove
-        </button>
-      </div>
-    </div>
-  `).join('');
+function getProductRating(productId) {
+  const productReviews = reviews[productId] || [];
+  if (productReviews.length === 0) return 0;
+  const totalRating = productReviews.reduce(
+    (sum, review) => sum + review.rating,
+    0
+  );
+  return totalRating / productReviews.length;
 }
 
-// =============================================================================
-// ORDER TRACKING SYSTEM
-// =============================================================================
+function getProductReviewCount(productId) {
+  return (reviews[productId] || []).length;
+}
 
-/**
- * Open order tracking modal
- */
+function renderStarRating(rating, interactive = false, productId = null) {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+  let starsHTML = "";
+
+  // Full stars
+  for (let i = 0; i < fullStars; i++) {
+    starsHTML += interactive
+      ? `<i class="fas fa-star" data-rating="${
+          i + 1
+        }" data-product="${productId}"></i>`
+      : '<i class="fas fa-star"></i>';
+  }
+
+  // Half star
+  if (hasHalfStar) {
+    starsHTML += interactive
+      ? `<i class="fas fa-star-half-alt" data-rating="${
+          fullStars + 1
+        }" data-product="${productId}"></i>`
+      : '<i class="fas fa-star-half-alt"></i>';
+  }
+
+  // Empty stars
+  for (let i = 0; i < emptyStars; i++) {
+    starsHTML += interactive
+      ? `<i class="far fa-star" data-rating="${
+          fullStars + hasHalfStar + i + 1
+        }" data-product="${productId}"></i>`
+      : '<i class="far fa-star"></i>';
+  }
+
+  return starsHTML;
+}
+
+function openReviewModal(productId) {
+  const product = products.find((p) => p.id === productId);
+  if (!product) return;
+
+  const modal = document.createElement("div");
+  modal.className = "review-modal";
+  modal.innerHTML = `
+    <div class="review-modal-content">
+      <div class="review-header">
+        <h3>Write a Review</h3>
+        <span class="close-review">&times;</span>
+      </div>
+      <div class="review-body">
+        <div class="review-product">
+          <img src="${product.image}" alt="${
+    product.name
+  }" class="review-product-image">
+          <div class="review-product-info">
+            <h4>${product.name}</h4>
+            <p>${product.description}</p>
+          </div>
+        </div>
+        <form class="review-form" data-product="${productId}">
+          <div class="rating-input">
+            <label>Your Rating:</label>
+            <div class="star-rating-input">
+              ${renderStarRating(0, true, productId)}
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="review-name">Name:</label>
+            <input type="text" id="review-name" required>
+          </div>
+          <div class="form-group">
+            <label for="review-email">Email:</label>
+            <input type="email" id="review-email" required>
+          </div>
+          <div class="form-group">
+            <label for="review-text">Review:</label>
+            <textarea id="review-text" rows="4" placeholder="Share your thoughts about this product..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary">Submit Review</button>
+        </form>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Close modal functionality
+  modal
+    .querySelector(".close-review")
+    .addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.remove();
+  });
+
+  // Star rating interaction
+  const stars = modal.querySelectorAll(".star-rating-input i");
+  let selectedRating = 0;
+
+  stars.forEach((star) => {
+    star.addEventListener("click", function () {
+      selectedRating = parseInt(this.dataset.rating);
+      updateStarDisplay(stars, selectedRating);
+    });
+  });
+
+  // Form submission
+  modal.querySelector(".review-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    if (selectedRating === 0) {
+      showNotification("Please select a rating");
+      return;
+    }
+
+    const reviewData = {
+      id: Date.now(),
+      productId: productId,
+      name: this.querySelector("#review-name").value,
+      email: this.querySelector("#review-email").value,
+      rating: selectedRating,
+      text: this.querySelector("#review-text").value,
+      date: new Date().toISOString(),
+    };
+
+    // Save review
+    if (!reviews[productId]) {
+      reviews[productId] = [];
+    }
+    reviews[productId].push(reviewData);
+    localStorage.setItem("productReviews", JSON.stringify(reviews));
+
+    modal.remove();
+    showNotification("Review submitted successfully!");
+    displayProducts(); // Refresh to show updated ratings
+  });
+}
+
+function updateStarDisplay(stars, rating) {
+  stars.forEach((star, index) => {
+    if (index < rating) {
+      star.className = "fas fa-star";
+    } else {
+      star.className = "far fa-star";
+    }
+  });
+}
+
+// Order Tracking Management
+let orders = JSON.parse(localStorage.getItem("userOrders")) || [];
+
 function openOrderTracking() {
-  const modal = document.createElement('div');
-  modal.className = 'order-tracking-modal';
+  const modal = document.createElement("div");
+  modal.className = "order-tracking-modal";
   modal.innerHTML = `
     <div class="order-tracking-content">
       <div class="order-tracking-header">
@@ -1282,32 +598,36 @@ function openOrderTracking() {
 
   // Focus on input
   setTimeout(() => {
-    modal.querySelector('#order-number-input').focus();
+    modal.querySelector("#order-number-input").focus();
   }, 100);
 
   // Close modal functionality
-  modal.querySelector('.close-tracking').addEventListener('click', () => modal.remove());
-  modal.addEventListener('click', (e) => {
+  modal
+    .querySelector(".close-tracking")
+    .addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (e) => {
     if (e.target === modal) modal.remove();
   });
 
   // Enter key support
-  modal.querySelector('#order-number-input').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      trackOrder();
-    }
-  });
+  modal
+    .querySelector("#order-number-input")
+    .addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        trackOrder();
+      }
+    });
 }
 
-/**
- * Track order by order number
- */
 function trackOrder() {
-  const orderNumber = document.getElementById('order-number-input').value.trim().toUpperCase();
-  const resultDiv = document.getElementById('tracking-result');
+  const orderNumber = document
+    .getElementById("order-number-input")
+    .value.trim()
+    .toUpperCase();
+  const resultDiv = document.getElementById("tracking-result");
 
   if (!orderNumber) {
-    showTrackingResult('Please enter an order number', 'error');
+    showTrackingResult("Please enter an order number", "error");
     return;
   }
 
@@ -1317,24 +637,52 @@ function trackOrder() {
   if (mockOrder) {
     displayOrderTracking(mockOrder);
   } else {
-    showTrackingResult('Order not found. Please check your order number and try again.', 'error');
+    showTrackingResult(
+      "Order not found. Please check your order number and try again.",
+      "error"
+    );
   }
 }
 
-/**
- * Generate mock order data for tracking
- * @param {string} orderNumber - Order number to generate data for
- * @returns {Object|null} Mock order data or null if not found
- */
 function generateMockOrder(orderNumber) {
   // Generate mock order data based on order number
   const orderStatuses = [
-    { status: 'Order Placed', description: 'Your order has been received and is being processed.', date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), completed: true },
-    { status: 'Payment Confirmed', description: 'Payment has been successfully processed.', date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), completed: true },
-    { status: 'Order Packed', description: 'Your items have been carefully packed for shipping.', date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), completed: true },
-    { status: 'Shipped', description: 'Your order is on its way!', date: new Date(Date.now() - 12 * 60 * 60 * 1000), completed: true },
-    { status: 'Out for Delivery', description: 'Your package is out for delivery and will arrive today.', date: new Date(Date.now() - 2 * 60 * 60 * 1000), completed: false },
-    { status: 'Delivered', description: 'Package successfully delivered!', date: new Date(), completed: false }
+    {
+      status: "Order Placed",
+      description: "Your order has been received and is being processed.",
+      date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      completed: true,
+    },
+    {
+      status: "Payment Confirmed",
+      description: "Payment has been successfully processed.",
+      date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      completed: true,
+    },
+    {
+      status: "Order Packed",
+      description: "Your items have been carefully packed for shipping.",
+      date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      completed: true,
+    },
+    {
+      status: "Shipped",
+      description: "Your order is on its way!",
+      date: new Date(Date.now() - 12 * 60 * 60 * 1000),
+      completed: true,
+    },
+    {
+      status: "Out for Delivery",
+      description: "Your package is out for delivery and will arrive today.",
+      date: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      completed: false,
+    },
+    {
+      status: "Delivered",
+      description: "Package successfully delivered!",
+      date: new Date(),
+      completed: false,
+    },
   ];
 
   // Determine how far along the order is (random for demo)
@@ -1348,26 +696,40 @@ function generateMockOrder(orderNumber) {
     status: currentStatuses[currentStatuses.length - 1].status,
     statuses: currentStatuses,
     items: [
-      { name: 'Elegant Evening Dress', quantity: 1, image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=50&h=50&fit=crop&crop=center' },
-      { name: 'Designer Handbag', quantity: 1, image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=50&h=50&fit=crop&crop=center' }
+      {
+        name: "Elegant Evening Dress",
+        quantity: 1,
+        image:
+          "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=50&h=50&fit=crop&crop=center",
+      },
+      {
+        name: "Designer Handbag",
+        quantity: 1,
+        image:
+          "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=50&h=50&fit=crop&crop=center",
+      },
     ],
     shippingAddress: {
-      name: 'John Doe',
-      address: '123 Fashion Street',
-      city: 'New York, NY 10001'
-    }
+      name: "John Doe",
+      address: "123 Fashion Street",
+      city: "New York, NY 10001",
+    },
   };
 }
 
-/**
- * Display order tracking results
- * @param {Object} order - Order tracking data
- */
 function displayOrderTracking(order) {
-  const resultDiv = document.getElementById('tracking-result');
+  const resultDiv = document.getElementById("tracking-result");
 
-  const statusHTML = order.statuses.map((status, index) => `
-    <div class="tracking-step ${status.completed ? 'completed' : index === order.statuses.length - 1 ? 'current' : ''}">
+  const statusHTML = order.statuses
+    .map(
+      (status, index) => `
+    <div class="tracking-step ${
+      status.completed
+        ? "completed"
+        : index === order.statuses.length - 1
+        ? "current"
+        : ""
+    }">
       <div class="step-icon">
         <i class="fas ${getStatusIcon(status.status)}"></i>
       </div>
@@ -1377,13 +739,17 @@ function displayOrderTracking(order) {
         <span class="step-date">${formatDate(status.date)}</span>
       </div>
     </div>
-  `).join('');
+  `
+    )
+    .join("");
 
   resultDiv.innerHTML = `
     <div class="order-details">
       <div class="order-header">
         <h4>Order ${order.orderNumber}</h4>
-        <span class="order-status status-${order.status.toLowerCase().replace(' ', '-')}">${order.status}</span>
+        <span class="order-status status-${order.status
+          .toLowerCase()
+          .replace(" ", "-")}">${order.status}</span>
       </div>
 
       <div class="order-info">
@@ -1404,12 +770,16 @@ function displayOrderTracking(order) {
       <div class="order-items">
         <h5>Items in this order:</h5>
         <div class="tracking-items">
-          ${order.items.map(item => `
+          ${order.items
+            .map(
+              (item) => `
             <div class="tracking-item">
               <img src="${item.image}" alt="${item.name}">
               <span>${item.name} (x${item.quantity})</span>
             </div>
-          `).join('')}
+          `
+            )
+            .join("")}
         </div>
       </div>
 
@@ -1422,194 +792,854 @@ function displayOrderTracking(order) {
     </div>
   `;
 
-  resultDiv.style.display = 'block';
+  resultDiv.style.display = "block";
 }
 
-/**
- * Show tracking result message
- * @param {string} message - Message to display
- * @param {string} type - Message type (success, error)
- */
 function showTrackingResult(message, type) {
-  const resultDiv = document.getElementById('tracking-result');
+  const resultDiv = document.getElementById("tracking-result");
   resultDiv.innerHTML = `
     <div class="tracking-message ${type}">
-      <i class="fas ${type === 'error' ? 'fa-exclamation-triangle' : 'fa-check-circle'}"></i>
+      <i class="fas ${
+        type === "error" ? "fa-exclamation-triangle" : "fa-check-circle"
+      }"></i>
       <p>${message}</p>
     </div>
   `;
-  resultDiv.style.display = 'block';
+  resultDiv.style.display = "block";
 }
 
-/**
- * Get icon class for order status
- * @param {string} status - Order status
- * @returns {string} FontAwesome icon class
- */
 function getStatusIcon(status) {
   const icons = {
-    'Order Placed': 'fa-shopping-cart',
-    'Payment Confirmed': 'fa-credit-card',
-    'Order Packed': 'fa-box',
-    'Shipped': 'fa-truck',
-    'Out for Delivery': 'fa-shipping-fast',
-    'Delivered': 'fa-check-circle'
+    "Order Placed": "fa-shopping-cart",
+    "Payment Confirmed": "fa-credit-card",
+    "Order Packed": "fa-box",
+    Shipped: "fa-truck",
+    "Out for Delivery": "fa-shipping-fast",
+    Delivered: "fa-check-circle",
   };
-  return icons[status] || 'fa-circle';
+  return icons[status] || "fa-circle";
 }
 
-// =============================================================================
-// PRODUCT MODAL (QUICK VIEW)
-// =============================================================================
+function formatDate(date) {
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
 
-/**
- * Open product modal for quick view
- * @param {number} productId - Product ID
- */
-function openProductModal(productId) {
-  const product = products.find(p => p.id === productId);
-  if (!product) return;
+// Theme Management
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute("data-theme");
+  const newTheme = currentTheme === "dark" ? "light" : "dark";
 
-  const modal = document.createElement('div');
-  modal.className = 'product-modal';
-  modal.innerHTML = `
-    <div class="product-modal-content">
-      <div class="product-modal-header">
-        <span class="close-product-modal">&times;</span>
+  document.documentElement.setAttribute("data-theme", newTheme);
+  localStorage.setItem("theme", newTheme);
+
+  // Update theme toggle icon
+  const themeIcon = document.querySelector(".theme-toggle i");
+  if (newTheme === "dark") {
+    themeIcon.className = "fas fa-sun";
+  } else {
+    themeIcon.className = "fas fa-moon";
+  }
+
+  showNotification(`Switched to ${newTheme} mode`);
+}
+
+// Initialize theme on page load
+function initializeTheme() {
+  const savedTheme = localStorage.getItem("theme") || "light";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+
+  const themeIcon = document.querySelector(".theme-toggle i");
+  if (savedTheme === "dark") {
+    themeIcon.className = "fas fa-sun";
+  } else {
+    themeIcon.className = "fas fa-moon";
+  }
+}
+
+// DOM Elements
+const productGrid = document.getElementById("product-grid");
+const cartCount = document.querySelector(".cart-count");
+const contactForm = document.querySelector(".contact-form");
+const filterButtons = document.querySelectorAll(".filter-btn");
+const searchInput = document.getElementById("product-search");
+const loadMoreBtn = document.getElementById("load-more-btn");
+
+// Initialize the page
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("DOM loaded, initializing...");
+  console.log("Products array length:", products.length);
+  initializeTheme();
+  updateWishlistButtons();
+  updateWishlistCount();
+  displayProducts();
+  setupSmoothScrolling();
+  setupContactForm();
+  setupHeaderScrollEffect();
+  setupProductFilters();
+  setupSearch();
+  setupLoadMore();
+  console.log("Initialization complete");
+});
+
+// Display products with filtering and pagination
+function displayProducts(resetPage = true) {
+  console.log("displayProducts called with resetPage:", resetPage);
+  if (resetPage) {
+    currentPage = 1;
+  }
+
+  // Filter products based on category and search
+  let filteredProducts = products.filter((product) => {
+    const matchesCategory =
+      currentFilter === "all" || product.category === currentFilter;
+    const matchesSearch =
+      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      product.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  console.log(
+    "Filtered products:",
+    filteredProducts.length,
+    "out of",
+    products.length
+  );
+
+  // Calculate pagination
+  const totalProducts = filteredProducts.length;
+  const startIndex = 0;
+  const endIndex = currentPage * productsPerPage;
+  const productsToShow = filteredProducts.slice(startIndex, endIndex);
+
+  // Clear and populate grid
+  productGrid.innerHTML = "";
+
+  if (productsToShow.length === 0) {
+    productGrid.innerHTML = `
+      <div class="no-products">
+        <i class="fas fa-search"></i>
+        <h3>No products found</h3>
+        <p>Try adjusting your search or filter criteria</p>
       </div>
-      <div class="product-modal-body">
-        <div class="product-modal-image">
-          <img src="${product.image}" alt="${product.name}">
+    `;
+    loadMoreBtn.style.display = "none";
+    return;
+  }
+
+  productsToShow.forEach((product) => {
+    const productCard = document.createElement("div");
+    productCard.className = "product-card";
+    productCard.innerHTML = `
+      <div class="product-image">
+        <img src="${product.image}" alt="${product.name}" loading="lazy">
+        <div class="placeholder-image" data-text="${
+          product.name
+        }" style="display: none;"></div>
+      </div>
+      <div class="product-info">
+        <div class="product-header">
+          <h3>${product.name}</h3>
+          <button class="wishlist-btn ${
+            isInWishlist(product.id) ? "active" : ""
+          }" data-product="${product.id}" onclick="toggleWishlist(${
+      product.id
+    })">
+            <i class="${
+              isInWishlist(product.id) ? "fas fa-heart" : "far fa-heart"
+            }"></i>
+          </button>
         </div>
-        <div class="product-modal-details">
-          <h2>${product.name}</h2>
-          <p class="product-modal-description">${product.description}</p>
-          <div class="product-modal-rating">
-            ${renderStarRating(product.id)}
+        <div class="product-rating">
+          <div class="stars">
+            ${renderStarRating(getProductRating(product.id))}
           </div>
-          <div class="product-modal-price">
-            <span class="price">${formatCurrency(product.price)}</span>
-          </div>
-          <div class="product-modal-actions">
-            <button class="btn-primary" onclick="addToCart(${product.id}); this.closest('.product-modal').remove()">
-              <i class="fas fa-cart-plus"></i> Add to Cart
-            </button>
-            <button class="btn-secondary wishlist-btn ${wishlist.some(item => item.id === product.id) ? 'active' : ''}"
-                    onclick="toggleWishlist(${product.id}); this.classList.toggle('active')">
-              <i class="fas fa-heart"></i>
-            </button>
-          </div>
+          <span class="review-count">(${getProductReviewCount(
+            product.id
+          )})</span>
         </div>
+        <p class="product-description">${product.description}</p>
+        <div class="product-actions">
+          <button class="review-btn" onclick="openReviewModal(${product.id})">
+            <i class="fas fa-star"></i> Review
+          </button>
+          <button class="add-to-cart" onclick="addToCart(${product.id})">
+            <i class="fas fa-shopping-cart"></i> Add to Cart
+          </button>
+        </div>
+      </div>
+    `;
+    productGrid.appendChild(productCard);
+  });
+
+  // Show/hide load more button
+  loadMoreBtn.style.display =
+    endIndex < totalProducts ? "inline-block" : "none";
+}
+
+// Add to cart
+function addToCart(productId) {
+  const product = products.find((p) => p.id === productId);
+  const existingItem = cart.find((item) => item.id === productId);
+
+  if (existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: 1,
+      description: product.description,
+    });
+  }
+
+  updateCartCount();
+  showNotification(`${product.name} added to cart!`);
+
+  // Refresh cart display if modal is open
+  const modal = document.getElementById("cart-modal");
+  if (modal && modal.style.display === "block") {
+    displayCartItems();
+  }
+}
+
+// Update cart count
+function updateCartCount() {
+  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+  cartCount.textContent = totalItems;
+}
+
+// Toggle cart modal
+function toggleCart() {
+  const modal = document.getElementById("cart-modal");
+  if (modal.style.display === "block") {
+    modal.style.display = "none";
+  } else {
+    modal.style.display = "block";
+    displayCartItems();
+  }
+}
+
+// Display cart items
+function displayCartItems() {
+  const cartItemsContainer = document.querySelector(".cart-items");
+  const cartTotalElement = document.getElementById("cart-total");
+
+  if (cart.length === 0) {
+    cartItemsContainer.innerHTML = `
+      <div class="empty-cart">
+        <i class="fas fa-shopping-cart"></i>
+        <p>Your cart is empty</p>
+        <button class="btn-primary" onclick="toggleCart()">Continue Shopping</button>
+      </div>
+    `;
+    cartTotalElement.textContent = "0.00";
+    return;
+  }
+
+  cartItemsContainer.innerHTML = cart
+    .map(
+      (item, index) => `
+    <div class="cart-item">
+      <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+      <div class="cart-item-details">
+        <h4>${item.name}</h4>
+        <p>${item.description}</p>
+        <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+        <div class="cart-item-quantity">
+          <button class="quantity-btn" onclick="updateQuantity(${index}, ${
+        item.quantity - 1
+      })">-</button>
+          <span>${item.quantity}</span>
+          <button class="quantity-btn" onclick="updateQuantity(${index}, ${
+        item.quantity + 1
+      })">+</button>
+          <button class="quantity-btn cart-item-remove" onclick="removeFromCart(${index})">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  `
+    )
+    .join("");
+
+  updateCartTotal();
+}
+
+// Update item quantity
+function updateQuantity(index, newQuantity) {
+  if (newQuantity <= 0) {
+    removeFromCart(index);
+    return;
+  }
+
+  cart[index].quantity = newQuantity;
+  updateCartCount();
+  displayCartItems();
+}
+
+// Remove item from cart
+function removeFromCart(index) {
+  const removedItem = cart[index];
+  cart.splice(index, 1);
+  updateCartCount();
+  displayCartItems();
+  showNotification(`${removedItem.name} removed from cart`);
+}
+
+// Update cart total
+function updateCartTotal() {
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  document.getElementById("cart-total").textContent = total.toFixed(2);
+}
+
+// Handle checkout
+// Close cart when clicking outside
+document.addEventListener("click", function (event) {
+  const modal = document.getElementById("cart-modal");
+  const cartIcon = document.querySelector(".cart-icon");
+  const closeBtn = document.querySelector(".close-cart");
+
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+
+  if (closeBtn && event.target === closeBtn) {
+    modal.style.display = "none";
+  }
+});
+
+// Add event listener for checkout button
+document.addEventListener("DOMContentLoaded", function () {
+  const checkoutBtn = document.querySelector(".checkout-btn");
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener("click", handleCheckout);
+  }
+});
+
+// Checkout functionality
+let currentStep = 1;
+let checkoutData = {};
+
+function handleCheckout() {
+  if (cart.length === 0) {
+    showNotification("Your cart is empty!");
+    return;
+  }
+
+  // Close cart modal and open checkout modal
+  document.getElementById("cart-modal").style.display = "none";
+  document.getElementById("checkout-modal").style.display = "block";
+
+  // Reset checkout
+  currentStep = 1;
+  checkoutData = {};
+  updateCheckoutProgress();
+  showCheckoutStep(1);
+}
+
+function updateCheckoutProgress() {
+  // Update progress steps
+  for (let i = 1; i <= 3; i++) {
+    const step = document.getElementById(`step-${i}`);
+    if (i <= currentStep) {
+      step.classList.add("active");
+    } else {
+      step.classList.remove("active");
+    }
+  }
+}
+
+function showCheckoutStep(step) {
+  // Hide all steps
+  document.querySelectorAll(".checkout-step").forEach((stepEl) => {
+    stepEl.classList.remove("active");
+  });
+
+  // Show current step
+  document
+    .getElementById(`${["shipping", "payment", "review"][step - 1]}-step`)
+    .classList.add("active");
+}
+
+function nextCheckoutStep() {
+  if (currentStep < 3) {
+    if (validateCurrentStep()) {
+      currentStep++;
+      updateCheckoutProgress();
+      showCheckoutStep(currentStep);
+
+      if (currentStep === 3) {
+        populateOrderReview();
+      }
+    }
+  }
+}
+
+function prevCheckoutStep() {
+  if (currentStep > 1) {
+    currentStep--;
+    updateCheckoutProgress();
+    showCheckoutStep(currentStep);
+  }
+}
+
+function validateCurrentStep() {
+  const currentStepEl = document.querySelector(".checkout-step.active");
+
+  if (currentStep === 1) {
+    // Validate shipping form
+    const requiredFields = currentStepEl.querySelectorAll("input[required]");
+    let isValid = true;
+
+    requiredFields.forEach((field) => {
+      if (!field.value.trim()) {
+        field.style.borderColor = "#e74c3c";
+        isValid = false;
+      } else {
+        field.style.borderColor = "#e0e0e0";
+      }
+    });
+
+    if (!isValid) {
+      showNotification("Please fill in all required fields");
+    }
+
+    return isValid;
+  }
+
+  if (currentStep === 2) {
+    // Validate payment form
+    const paymentMethod = document.querySelector(".payment-method.active")
+      .dataset.method;
+
+    if (paymentMethod === "card") {
+      const cardFields = document.querySelectorAll(
+        "#card-form input[required]"
+      );
+      let isValid = true;
+
+      cardFields.forEach((field) => {
+        if (!field.value.trim()) {
+          field.style.borderColor = "#e74c3c";
+          isValid = false;
+        } else {
+          field.style.borderColor = "#e0e0e0";
+        }
+      });
+
+      if (!isValid) {
+        showNotification("Please fill in all payment fields");
+      }
+
+      return isValid;
+    }
+  }
+
+  return true;
+}
+
+function populateOrderReview() {
+  // Populate order items
+  const reviewItems = document.getElementById("review-items");
+  reviewItems.innerHTML = cart
+    .map(
+      (item) => `
+    <div class="review-item">
+      <div class="review-item-info">
+        <img src="${item.image}" alt="${item.name}" class="review-item-image">
+        <div class="review-item-details">
+          <h6>${item.name}</h6>
+          <p>Quantity: ${item.quantity}</p>
+        </div>
+      </div>
+      <div class="review-item-price">$${(item.price * item.quantity).toFixed(
+        2
+      )}</div>
+    </div>
+  `
+    )
+    .join("");
+
+  // Calculate totals
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  const shipping = subtotal > 50 ? 0 : 9.99;
+  const tax = subtotal * 0.08;
+  const total = subtotal + shipping + tax;
+
+  document.getElementById("review-subtotal").textContent = subtotal.toFixed(2);
+  document.getElementById("review-shipping").textContent = shipping.toFixed(2);
+  document.getElementById("review-tax").textContent = tax.toFixed(2);
+  document.getElementById("review-total").textContent = total.toFixed(2);
+
+  // Populate shipping address
+  const formData = new FormData(document.getElementById("checkout-form"));
+  const address = `
+    ${formData.get("firstName")} ${formData.get("lastName")}<br>
+    ${formData.get("address")}<br>
+    ${formData.get("city")}, ${formData.get("zip")}<br>
+    ${
+      document.getElementById("country").options[
+        document.getElementById("country").selectedIndex
+      ].text
+    }
+  `;
+  document.getElementById("review-address").innerHTML = address;
+}
+
+function submitOrder(event) {
+  event.preventDefault();
+
+  // Simulate order processing
+  showNotification("Processing your order...");
+
+  // Here you would typically send the order to a backend
+  setTimeout(() => {
+    // Generate order number
+    const orderNumber = "MMA" + Date.now();
+
+    // Clear cart
+    cart = [];
+    updateCartCount();
+
+    // Close checkout modal
+    document.getElementById("checkout-modal").style.display = "none";
+
+    // Show success message
+    showOrderConfirmation(orderNumber);
+
+    // Reset form
+    document.getElementById("checkout-form").reset();
+    currentStep = 1;
+  }, 2000);
+}
+
+function showOrderConfirmation(orderNumber) {
+  const confirmationModal = document.createElement("div");
+  confirmationModal.className = "order-confirmation-modal";
+  confirmationModal.innerHTML = `
+    <div class="order-confirmation-content">
+      <div class="confirmation-header">
+        <i class="fas fa-check-circle"></i>
+        <h3>Order Confirmed!</h3>
+      </div>
+      <div class="confirmation-body">
+        <p>Thank you for your order! Your order number is:</p>
+        <div class="order-number">${orderNumber}</div>
+        <p>You will receive a confirmation email shortly with your order details.</p>
+        <button class="btn-primary" onclick="this.parentElement.parentElement.parentElement.remove()">Continue Shopping</button>
       </div>
     </div>
   `;
 
-  document.body.appendChild(modal);
+  document.body.appendChild(confirmationModal);
 
-  // Close modal functionality
-  modal.querySelector('.close-product-modal').addEventListener('click', () => modal.remove());
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.remove();
-  });
+  // Auto remove after 10 seconds
+  setTimeout(() => {
+    if (confirmationModal.parentNode) {
+      confirmationModal.remove();
+    }
+  }, 10000);
 }
 
-// =============================================================================
-// INITIALIZATION & EVENT LISTENERS
-// =============================================================================
-
-/**
- * Initialize the application when DOM is loaded
- */
-document.addEventListener('DOMContentLoaded', function() {
-  // Initialize theme
-  initializeTheme();
-
-  // Initialize cart count
-  updateCartCount();
-
-  // Render initial products
-  renderProducts();
-
-  // Set up event listeners
-  setupEventListeners();
-});
-
-/**
- * Set up all event listeners
- */
-function setupEventListeners() {
-  // Search functionality
-  const searchInput = document.getElementById('search-input');
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => searchProducts(e.target.value));
-  }
-
-  // Category filters
-  document.querySelectorAll('.category-filter').forEach(button => {
-    button.addEventListener('click', () => filterByCategory(button.dataset.category));
+// Event listeners for checkout
+document.addEventListener("DOMContentLoaded", function () {
+  // Next step buttons
+  document.querySelectorAll(".next-step-btn").forEach((btn) => {
+    btn.addEventListener("click", nextCheckoutStep);
   });
 
-  // Cart modal close on outside click
-  document.addEventListener('click', (e) => {
-    const cartModal = document.getElementById('cart-modal');
-    if (cartModal && cartModal.classList.contains('active') && !cartModal.contains(e.target) && !e.target.closest('.cart-toggle')) {
-      cartModal.classList.remove('active');
+  // Previous step buttons
+  document.querySelectorAll(".prev-step-btn").forEach((btn) => {
+    btn.addEventListener("click", prevCheckoutStep);
+  });
+
+  // Payment method selection
+  document.querySelectorAll(".payment-method").forEach((method) => {
+    method.addEventListener("click", function () {
+      document
+        .querySelectorAll(".payment-method")
+        .forEach((m) => m.classList.remove("active"));
+      this.classList.add("active");
+
+      const methodType = this.dataset.method;
+      document
+        .querySelectorAll(".payment-form")
+        .forEach((form) => form.classList.add("hidden"));
+      document.getElementById(`${methodType}-form`).classList.remove("hidden");
+    });
+  });
+
+  // Close checkout modal
+  document
+    .querySelector(".close-checkout")
+    .addEventListener("click", function () {
+      document.getElementById("checkout-modal").style.display = "none";
+    });
+
+  // Checkout form submission
+  document
+    .getElementById("checkout-form")
+    .addEventListener("submit", submitOrder);
+
+  // Close checkout on outside click
+  document.addEventListener("click", function (event) {
+    const modal = document.getElementById("checkout-modal");
+    if (event.target === modal) {
+      modal.style.display = "none";
     }
   });
+});
 
-  // Checkout button
-  const checkoutBtn = document.querySelector('.checkout-btn');
-  if (checkoutBtn) {
-    checkoutBtn.addEventListener('click', openCheckout);
-  }
+// Show notification
+function showNotification(message) {
+  // Create notification element
+  const notification = document.createElement("div");
+  notification.className = "notification";
+  notification.textContent = message;
+  document.body.appendChild(notification);
 
-  // Clear cart button
-  const clearCartBtn = document.querySelector('.clear-cart-btn');
-  if (clearCartBtn) {
-    clearCartBtn.addEventListener('click', clearCart);
-  }
+  // Style the notification
+  Object.assign(notification.style, {
+    position: "fixed",
+    top: "20px",
+    right: "20px",
+    background: "#e91e63",
+    color: "white",
+    padding: "15px 20px",
+    borderRadius: "5px",
+    boxShadow: "0 2px 10px rgba(0,0,0,0.2)",
+    zIndex: "1000",
+    opacity: "0",
+    transform: "translateX(100%)",
+    transition: "all 0.3s ease",
+  });
 
-  // Theme toggle
-  const themeToggle = document.querySelector('.theme-toggle');
-  if (themeToggle) {
-    themeToggle.addEventListener('click', toggleTheme);
-  }
+  // Animate in
+  setTimeout(() => {
+    notification.style.opacity = "1";
+    notification.style.transform = "translateX(0)";
+  }, 100);
 
-  // Wishlist button
-  const wishlistBtn = document.querySelector('.wishlist-btn');
-  if (wishlistBtn) {
-    wishlistBtn.addEventListener('click', openWishlistModal);
-  }
-
-  // Track order link
-  const trackOrderLink = document.querySelector('.track-order-link');
-  if (trackOrderLink) {
-    trackOrderLink.addEventListener('click', openOrderTracking);
-  }
+  // Remove after 3 seconds
+  setTimeout(() => {
+    notification.style.opacity = "0";
+    notification.style.transform = "translateX(100%)";
+    setTimeout(() => {
+      document.body.removeChild(notification);
+    }, 300);
+  }, 3000);
 }
 
-// =============================================================================
-// EXPORTED FUNCTIONS (for global access)
-// =============================================================================
+// Smooth scrolling for navigation
+function setupSmoothScrolling() {
+  const navLinks = document.querySelectorAll("nav a");
+  navLinks.forEach((link) => {
+    link.addEventListener("click", function (e) {
+      e.preventDefault();
+      const targetId = this.getAttribute("href");
+      const targetSection = document.querySelector(targetId);
+      const headerHeight = document.querySelector("header").offsetHeight;
+      const targetPosition = targetSection.offsetTop - headerHeight;
 
-// Make functions globally available for HTML onclick handlers
-window.addToCart = addToCart;
-window.toggleCart = toggleCart;
-window.updateCartQuantity = updateCartQuantity;
-window.removeFromCart = removeFromCart;
-window.clearCart = clearCart;
-window.openCheckout = openCheckout;
-window.closeCheckout = closeCheckout;
-window.handleCheckoutSubmit = handleCheckoutSubmit;
-window.closeOrderConfirmation = closeOrderConfirmation;
-window.openOrderTracking = openOrderTracking;
-window.trackOrder = trackOrder;
-window.toggleWishlist = toggleWishlist;
-window.openWishlistModal = openWishlistModal;
-window.openReviewModal = openReviewModal;
-window.setRating = setRating;
-window.submitReview = submitReview;
-window.openProductModal = openProductModal;
-window.toggleTheme = toggleTheme;
-window.filterByCategory = filterByCategory;
-window.changePage = changePage;
+      window.scrollTo({
+        top: targetPosition,
+        behavior: "smooth",
+      });
+    });
+  });
+}
+
+// Contact form handling
+function setupContactForm() {
+  contactForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const formData = new FormData(this);
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const message = formData.get("message");
+
+    // Simulate form submission
+    showNotification("Thank you for your message! We'll get back to you soon.");
+    this.reset();
+  });
+}
+
+// Add some animation on scroll
+function setupHeaderScrollEffect() {
+  const header = document.querySelector("header");
+  window.addEventListener("scroll", function () {
+    if (window.scrollY > 50) {
+      header.classList.add("scrolled");
+    } else {
+      header.classList.remove("scrolled");
+    }
+  });
+}
+
+window.addEventListener("scroll", function () {
+  const sections = document.querySelectorAll("section");
+  const scrollPosition = window.pageYOffset + window.innerHeight;
+
+  sections.forEach((section) => {
+    if (scrollPosition > section.offsetTop + 100) {
+      section.style.opacity = "1";
+      section.style.transform = "translateY(0)";
+    }
+  });
+});
+
+// Initialize section animations
+document.addEventListener("DOMContentLoaded", function () {
+  const sections = document.querySelectorAll("section");
+  sections.forEach((section) => {
+    if (section.id !== "home") {
+      section.style.opacity = "0";
+      section.style.transform = "translateY(20px)";
+      section.style.transition = "opacity 0.6s ease, transform 0.6s ease";
+    }
+  });
+});
+
+// Setup product filters
+function setupProductFilters() {
+  console.log("Setting up product filters...");
+  filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      console.log("Filter button clicked:", button.dataset.filter);
+      // Remove active class from all buttons
+      filterButtons.forEach((btn) => btn.classList.remove("active"));
+      // Add active class to clicked button
+      button.classList.add("active");
+
+      // Update current filter
+      currentFilter = button.dataset.filter;
+      searchQuery = ""; // Reset search when filtering
+      searchInput.value = ""; // Clear search input
+
+      // Display filtered products
+      displayProducts();
+    });
+  });
+  console.log("Product filters setup complete");
+}
+
+// Setup search functionality
+function setupSearch() {
+  console.log("Setting up search...");
+  let searchTimeout;
+
+  searchInput.addEventListener("input", (e) => {
+    console.log("Search input event:", e.target.value);
+    clearTimeout(searchTimeout);
+    searchTimeout = setTimeout(() => {
+      searchQuery = e.target.value.trim();
+      console.log("Search query set to:", searchQuery);
+      displayProducts();
+    }, 300); // Debounce search
+  });
+  console.log("Search setup complete");
+}
+
+// Setup load more functionality
+function setupLoadMore() {
+  loadMoreBtn.addEventListener("click", () => {
+    currentPage++;
+    displayProducts(false); // Don't reset page
+  });
+}
+
+// Enhanced add to cart with better feedback
+function addToCart(productId) {
+  const product = products.find((p) => p.id === productId);
+  const existingItem = cart.find((item) => item.id === productId);
+
+  if (existingItem) {
+    existingItem.quantity += 1;
+  } else {
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      quantity: 1,
+    });
+  }
+
+  updateCartCount();
+
+  // Enhanced notification with product image
+  showNotification(`${product.name} added to cart!`, product.image);
+}
+
+// Enhanced notification with image
+function showNotification(message, imageUrl = null) {
+  const notification = document.createElement("div");
+  notification.className = "notification enhanced";
+
+  notification.innerHTML = `
+    <div class="notification-content">
+      ${
+        imageUrl
+          ? `<img src="${imageUrl}" alt="Product" class="notification-image">`
+          : ""
+      }
+      <span>${message}</span>
+    </div>
+  `;
+
+  document.body.appendChild(notification);
+
+  // Enhanced styling
+  Object.assign(notification.style, {
+    position: "fixed",
+    top: "20px",
+    right: "20px",
+    background: "linear-gradient(135deg, #667eea, #764ba2)",
+    color: "white",
+    padding: "15px 20px",
+    borderRadius: "15px",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.2)",
+    zIndex: "10000",
+    transform: "translateX(100%)",
+    transition: "transform 0.3s ease",
+    maxWidth: "300px",
+    cursor: "pointer",
+  });
+
+  // Slide in animation
+  setTimeout(() => {
+    notification.style.transform = "translateX(0)";
+  }, 100);
+
+  // Auto remove after 4 seconds
+  setTimeout(() => {
+    notification.style.transform = "translateX(100%)";
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification);
+      }
+    }, 300);
+  }, 4000);
+
+  // Click to dismiss
+  notification.addEventListener("click", () => {
+    notification.style.transform = "translateX(100%)";
+    setTimeout(() => {
+      if (notification.parentNode) {
+        notification.parentNode.removeChild(notification);
+      }
+    }, 300);
+  });
+}
