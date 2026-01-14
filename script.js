@@ -271,6 +271,597 @@ let searchQuery = "";
 let productsPerPage = 12;
 let currentPage = 1;
 
+// Review Management
+let reviews = JSON.parse(localStorage.getItem("productReviews")) || {};
+
+// Wishlist Management
+let wishlist = JSON.parse(localStorage.getItem("productWishlist")) || [];
+
+function toggleWishlist(productId) {
+  const product = products.find((p) => p.id === productId);
+  if (!product) return;
+
+  const index = wishlist.findIndex((item) => item.id === productId);
+
+  if (index > -1) {
+    // Remove from wishlist
+    wishlist.splice(index, 1);
+    showNotification(`${product.name} removed from wishlist`);
+  } else {
+    // Add to wishlist
+    wishlist.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
+      category: product.category,
+      description: product.description,
+      addedDate: new Date().toISOString(),
+    });
+    showNotification(`${product.name} added to wishlist ❤️`);
+  }
+
+  // Save to localStorage
+  localStorage.setItem("productWishlist", JSON.stringify(wishlist));
+
+  // Update UI
+  updateWishlistButtons();
+  updateWishlistCount();
+}
+
+function isInWishlist(productId) {
+  return wishlist.some((item) => item.id === productId);
+}
+
+function updateWishlistButtons() {
+  document.querySelectorAll(".wishlist-btn").forEach((btn) => {
+    const productId = parseInt(btn.dataset.product);
+    const isWishlisted = isInWishlist(productId);
+
+    btn.classList.toggle("active", isWishlisted);
+    btn.querySelector("i").className = isWishlisted
+      ? "fas fa-heart"
+      : "far fa-heart";
+  });
+}
+
+function updateWishlistCount() {
+  const wishlistCount = wishlist.length;
+  const wishlistCountElement = document.querySelector(".wishlist-count");
+  if (wishlistCountElement) {
+    wishlistCountElement.textContent = wishlistCount;
+    wishlistCountElement.style.display = wishlistCount > 0 ? "inline" : "none";
+  }
+}
+
+function openWishlistModal() {
+  const modal = document.createElement("div");
+  modal.className = "wishlist-modal";
+  modal.innerHTML = `
+    <div class="wishlist-modal-content">
+      <div class="wishlist-header">
+        <h3>My Wishlist ❤️</h3>
+        <span class="close-wishlist">&times;</span>
+      </div>
+      <div class="wishlist-body">
+        ${
+          wishlist.length === 0
+            ? `<div class="empty-wishlist">
+              <i class="far fa-heart"></i>
+              <h4>Your wishlist is empty</h4>
+              <p>Add items you love to your wishlist!</p>
+              <button class="btn-primary" onclick="this.closest('.wishlist-modal').remove()">Continue Shopping</button>
+            </div>`
+            : `<div class="wishlist-grid">
+              ${wishlist
+                .map(
+                  (item) => `
+                <div class="wishlist-item">
+                  <div class="wishlist-item-image">
+                    <img src="${item.image}" alt="${item.name}">
+                  </div>
+                  <div class="wishlist-item-info">
+                    <h4>${item.name}</h4>
+                    <p class="wishlist-item-price">$${item.price.toFixed(2)}</p>
+                    <p class="wishlist-item-description">${item.description}</p>
+                    <div class="wishlist-item-rating">
+                      <div class="stars">
+                        ${renderStarRating(getProductRating(item.id))}
+                      </div>
+                      <span class="review-count">(${getProductReviewCount(
+                        item.id
+                      )})</span>
+                    </div>
+                  </div>
+                  <div class="wishlist-item-actions">
+                    <button class="btn-primary add-to-cart-wishlist" onclick="addToCart(${
+                      item.id
+                    }); this.closest('.wishlist-modal').remove()">
+                      <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                    <button class="btn-secondary remove-wishlist" onclick="toggleWishlist(${
+                      item.id
+                    })">
+                      <i class="fas fa-trash"></i> Remove
+                    </button>
+                  </div>
+                </div>
+              `
+                )
+                .join("")}
+            </div>`
+        }
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Close modal functionality
+  modal
+    .querySelector(".close-wishlist")
+    .addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.remove();
+  });
+}
+
+function getProductRating(productId) {
+  const productReviews = reviews[productId] || [];
+  if (productReviews.length === 0) return 0;
+  const totalRating = productReviews.reduce(
+    (sum, review) => sum + review.rating,
+    0
+  );
+  return totalRating / productReviews.length;
+}
+
+function getProductReviewCount(productId) {
+  return (reviews[productId] || []).length;
+}
+
+function renderStarRating(rating, interactive = false, productId = null) {
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 >= 0.5;
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+
+  let starsHTML = "";
+
+  // Full stars
+  for (let i = 0; i < fullStars; i++) {
+    starsHTML += interactive
+      ? `<i class="fas fa-star" data-rating="${
+          i + 1
+        }" data-product="${productId}"></i>`
+      : '<i class="fas fa-star"></i>';
+  }
+
+  // Half star
+  if (hasHalfStar) {
+    starsHTML += interactive
+      ? `<i class="fas fa-star-half-alt" data-rating="${
+          fullStars + 1
+        }" data-product="${productId}"></i>`
+      : '<i class="fas fa-star-half-alt"></i>';
+  }
+
+  // Empty stars
+  for (let i = 0; i < emptyStars; i++) {
+    starsHTML += interactive
+      ? `<i class="far fa-star" data-rating="${
+          fullStars + hasHalfStar + i + 1
+        }" data-product="${productId}"></i>`
+      : '<i class="far fa-star"></i>';
+  }
+
+  return starsHTML;
+}
+
+function openReviewModal(productId) {
+  const product = products.find((p) => p.id === productId);
+  if (!product) return;
+
+  const modal = document.createElement("div");
+  modal.className = "review-modal";
+  modal.innerHTML = `
+    <div class="review-modal-content">
+      <div class="review-header">
+        <h3>Write a Review</h3>
+        <span class="close-review">&times;</span>
+      </div>
+      <div class="review-body">
+        <div class="review-product">
+          <img src="${product.image}" alt="${
+    product.name
+  }" class="review-product-image">
+          <div class="review-product-info">
+            <h4>${product.name}</h4>
+            <p>${product.description}</p>
+          </div>
+        </div>
+        <form class="review-form" data-product="${productId}">
+          <div class="rating-input">
+            <label>Your Rating:</label>
+            <div class="star-rating-input">
+              ${renderStarRating(0, true, productId)}
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="review-name">Name:</label>
+            <input type="text" id="review-name" required>
+          </div>
+          <div class="form-group">
+            <label for="review-email">Email:</label>
+            <input type="email" id="review-email" required>
+          </div>
+          <div class="form-group">
+            <label for="review-text">Review:</label>
+            <textarea id="review-text" rows="4" placeholder="Share your thoughts about this product..." required></textarea>
+          </div>
+          <button type="submit" class="btn-primary">Submit Review</button>
+        </form>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Close modal functionality
+  modal
+    .querySelector(".close-review")
+    .addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.remove();
+  });
+
+  // Star rating interaction
+  const stars = modal.querySelectorAll(".star-rating-input i");
+  let selectedRating = 0;
+
+  stars.forEach((star) => {
+    star.addEventListener("click", function () {
+      selectedRating = parseInt(this.dataset.rating);
+      updateStarDisplay(stars, selectedRating);
+    });
+  });
+
+  // Form submission
+  modal.querySelector(".review-form").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    if (selectedRating === 0) {
+      showNotification("Please select a rating");
+      return;
+    }
+
+    const reviewData = {
+      id: Date.now(),
+      productId: productId,
+      name: this.querySelector("#review-name").value,
+      email: this.querySelector("#review-email").value,
+      rating: selectedRating,
+      text: this.querySelector("#review-text").value,
+      date: new Date().toISOString(),
+    };
+
+    // Save review
+    if (!reviews[productId]) {
+      reviews[productId] = [];
+    }
+    reviews[productId].push(reviewData);
+    localStorage.setItem("productReviews", JSON.stringify(reviews));
+
+    modal.remove();
+    showNotification("Review submitted successfully!");
+    displayProducts(); // Refresh to show updated ratings
+  });
+}
+
+function updateStarDisplay(stars, rating) {
+  stars.forEach((star, index) => {
+    if (index < rating) {
+      star.className = "fas fa-star";
+    } else {
+      star.className = "far fa-star";
+    }
+  });
+}
+
+// Order Tracking Management
+let orders = JSON.parse(localStorage.getItem("userOrders")) || [];
+
+function openOrderTracking() {
+  const modal = document.createElement("div");
+  modal.className = "order-tracking-modal";
+  modal.innerHTML = `
+    <div class="order-tracking-content">
+      <div class="order-tracking-header">
+        <h3>Track Your Order</h3>
+        <span class="close-tracking">&times;</span>
+      </div>
+      <div class="order-tracking-body">
+        <div class="tracking-form">
+          <p>Enter your order number to track your package:</p>
+          <div class="form-group">
+            <input type="text" id="order-number-input" placeholder="e.g., MMA123456789" maxlength="15">
+            <button class="btn-primary" onclick="trackOrder()">Track Order</button>
+          </div>
+        </div>
+        <div class="tracking-result" id="tracking-result" style="display: none;">
+          <!-- Order tracking result will be displayed here -->
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Focus on input
+  setTimeout(() => {
+    modal.querySelector("#order-number-input").focus();
+  }, 100);
+
+  // Close modal functionality
+  modal
+    .querySelector(".close-tracking")
+    .addEventListener("click", () => modal.remove());
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.remove();
+  });
+
+  // Enter key support
+  modal
+    .querySelector("#order-number-input")
+    .addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        trackOrder();
+      }
+    });
+}
+
+function trackOrder() {
+  const orderNumber = document
+    .getElementById("order-number-input")
+    .value.trim()
+    .toUpperCase();
+  const resultDiv = document.getElementById("tracking-result");
+
+  if (!orderNumber) {
+    showTrackingResult("Please enter an order number", "error");
+    return;
+  }
+
+  // Mock order tracking - in real app, this would be an API call
+  const mockOrder = generateMockOrder(orderNumber);
+
+  if (mockOrder) {
+    displayOrderTracking(mockOrder);
+  } else {
+    showTrackingResult(
+      "Order not found. Please check your order number and try again.",
+      "error"
+    );
+  }
+}
+
+function generateMockOrder(orderNumber) {
+  // Generate mock order data based on order number
+  const orderStatuses = [
+    {
+      status: "Order Placed",
+      description: "Your order has been received and is being processed.",
+      date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+      completed: true,
+    },
+    {
+      status: "Payment Confirmed",
+      description: "Payment has been successfully processed.",
+      date: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+      completed: true,
+    },
+    {
+      status: "Order Packed",
+      description: "Your items have been carefully packed for shipping.",
+      date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+      completed: true,
+    },
+    {
+      status: "Shipped",
+      description: "Your order is on its way!",
+      date: new Date(Date.now() - 12 * 60 * 60 * 1000),
+      completed: true,
+    },
+    {
+      status: "Out for Delivery",
+      description: "Your package is out for delivery and will arrive today.",
+      date: new Date(Date.now() - 2 * 60 * 60 * 1000),
+      completed: false,
+    },
+    {
+      status: "Delivered",
+      description: "Package successfully delivered!",
+      date: new Date(),
+      completed: false,
+    },
+  ];
+
+  // Determine how far along the order is (random for demo)
+  const progressIndex = Math.floor(Math.random() * orderStatuses.length);
+  const currentStatuses = orderStatuses.slice(0, progressIndex + 1);
+
+  return {
+    orderNumber: orderNumber,
+    orderDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+    estimatedDelivery: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+    status: currentStatuses[currentStatuses.length - 1].status,
+    statuses: currentStatuses,
+    items: [
+      {
+        name: "Elegant Evening Dress",
+        quantity: 1,
+        image:
+          "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=50&h=50&fit=crop&crop=center",
+      },
+      {
+        name: "Designer Handbag",
+        quantity: 1,
+        image:
+          "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=50&h=50&fit=crop&crop=center",
+      },
+    ],
+    shippingAddress: {
+      name: "John Doe",
+      address: "123 Fashion Street",
+      city: "New York, NY 10001",
+    },
+  };
+}
+
+function displayOrderTracking(order) {
+  const resultDiv = document.getElementById("tracking-result");
+
+  const statusHTML = order.statuses
+    .map(
+      (status, index) => `
+    <div class="tracking-step ${
+      status.completed
+        ? "completed"
+        : index === order.statuses.length - 1
+        ? "current"
+        : ""
+    }">
+      <div class="step-icon">
+        <i class="fas ${getStatusIcon(status.status)}"></i>
+      </div>
+      <div class="step-content">
+        <h4>${status.status}</h4>
+        <p>${status.description}</p>
+        <span class="step-date">${formatDate(status.date)}</span>
+      </div>
+    </div>
+  `
+    )
+    .join("");
+
+  resultDiv.innerHTML = `
+    <div class="order-details">
+      <div class="order-header">
+        <h4>Order ${order.orderNumber}</h4>
+        <span class="order-status status-${order.status
+          .toLowerCase()
+          .replace(" ", "-")}">${order.status}</span>
+      </div>
+
+      <div class="order-info">
+        <div class="info-item">
+          <span class="info-label">Order Date:</span>
+          <span class="info-value">${formatDate(order.orderDate)}</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Estimated Delivery:</span>
+          <span class="info-value">${formatDate(order.estimatedDelivery)}</span>
+        </div>
+      </div>
+
+      <div class="tracking-timeline">
+        ${statusHTML}
+      </div>
+
+      <div class="order-items">
+        <h5>Items in this order:</h5>
+        <div class="tracking-items">
+          ${order.items
+            .map(
+              (item) => `
+            <div class="tracking-item">
+              <img src="${item.image}" alt="${item.name}">
+              <span>${item.name} (x${item.quantity})</span>
+            </div>
+          `
+            )
+            .join("")}
+        </div>
+      </div>
+
+      <div class="delivery-info">
+        <h5>Delivery Address:</h5>
+        <p>${order.shippingAddress.name}<br>
+        ${order.shippingAddress.address}<br>
+        ${order.shippingAddress.city}</p>
+      </div>
+    </div>
+  `;
+
+  resultDiv.style.display = "block";
+}
+
+function showTrackingResult(message, type) {
+  const resultDiv = document.getElementById("tracking-result");
+  resultDiv.innerHTML = `
+    <div class="tracking-message ${type}">
+      <i class="fas ${
+        type === "error" ? "fa-exclamation-triangle" : "fa-check-circle"
+      }"></i>
+      <p>${message}</p>
+    </div>
+  `;
+  resultDiv.style.display = "block";
+}
+
+function getStatusIcon(status) {
+  const icons = {
+    "Order Placed": "fa-shopping-cart",
+    "Payment Confirmed": "fa-credit-card",
+    "Order Packed": "fa-box",
+    Shipped: "fa-truck",
+    "Out for Delivery": "fa-shipping-fast",
+    Delivered: "fa-check-circle",
+  };
+  return icons[status] || "fa-circle";
+}
+
+function formatDate(date) {
+  return date.toLocaleDateString("en-US", {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+// Theme Management
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute("data-theme");
+  const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+  document.documentElement.setAttribute("data-theme", newTheme);
+  localStorage.setItem("theme", newTheme);
+
+  // Update theme toggle icon
+  const themeIcon = document.querySelector(".theme-toggle i");
+  if (newTheme === "dark") {
+    themeIcon.className = "fas fa-sun";
+  } else {
+    themeIcon.className = "fas fa-moon";
+  }
+
+  showNotification(`Switched to ${newTheme} mode`);
+}
+
+// Initialize theme on page load
+function initializeTheme() {
+  const savedTheme = localStorage.getItem("theme") || "light";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+
+  const themeIcon = document.querySelector(".theme-toggle i");
+  if (savedTheme === "dark") {
+    themeIcon.className = "fas fa-sun";
+  } else {
+    themeIcon.className = "fas fa-moon";
+  }
+}
+
 // DOM Elements
 const productGrid = document.getElementById("product-grid");
 const cartCount = document.querySelector(".cart-count");
@@ -283,6 +874,9 @@ const loadMoreBtn = document.getElementById("load-more-btn");
 document.addEventListener("DOMContentLoaded", function () {
   console.log("DOM loaded, initializing...");
   console.log("Products array length:", products.length);
+  initializeTheme();
+  updateWishlistButtons();
+  updateWishlistCount();
   displayProducts();
   setupSmoothScrolling();
   setupContactForm();
@@ -344,14 +938,40 @@ function displayProducts(resetPage = true) {
     productCard.innerHTML = `
       <div class="product-image">
         <img src="${product.image}" alt="${product.name}" loading="lazy">
-        <div class="placeholder-image" data-text="${product.name}" style="display: none;"></div>
+        <div class="placeholder-image" data-text="${
+          product.name
+        }" style="display: none;"></div>
       </div>
       <div class="product-info">
-        <h3>${product.name}</h3>
+        <div class="product-header">
+          <h3>${product.name}</h3>
+          <button class="wishlist-btn ${
+            isInWishlist(product.id) ? "active" : ""
+          }" data-product="${product.id}" onclick="toggleWishlist(${
+      product.id
+    })">
+            <i class="${
+              isInWishlist(product.id) ? "fas fa-heart" : "far fa-heart"
+            }"></i>
+          </button>
+        </div>
+        <div class="product-rating">
+          <div class="stars">
+            ${renderStarRating(getProductRating(product.id))}
+          </div>
+          <span class="review-count">(${getProductReviewCount(
+            product.id
+          )})</span>
+        </div>
         <p class="product-description">${product.description}</p>
-        <button class="add-to-cart" onclick="addToCart(${product.id})">
-          <i class="fas fa-shopping-cart"></i> Add to Cart
-        </button>
+        <div class="product-actions">
+          <button class="review-btn" onclick="openReviewModal(${product.id})">
+            <i class="fas fa-star"></i> Review
+          </button>
+          <button class="add-to-cart" onclick="addToCart(${product.id})">
+            <i class="fas fa-shopping-cart"></i> Add to Cart
+          </button>
+        </div>
       </div>
     `;
     productGrid.appendChild(productCard);
