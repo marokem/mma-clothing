@@ -344,9 +344,7 @@ function displayProducts(resetPage = true) {
     productCard.innerHTML = `
       <div class="product-image">
         <img src="${product.image}" alt="${product.name}" loading="lazy">
-        <div class="placeholder-image" data-text="${
-          product.name
-        }" style="display: none;"></div>
+        <div class="placeholder-image" data-text="${product.name}" style="display: none;"></div>
       </div>
       <div class="product-info">
         <h3>${product.name}</h3>
@@ -378,11 +376,18 @@ function addToCart(productId) {
       price: product.price,
       image: product.image,
       quantity: 1,
+      description: product.description,
     });
   }
 
   updateCartCount();
   showNotification(`${product.name} added to cart!`);
+
+  // Refresh cart display if modal is open
+  const modal = document.getElementById("cart-modal");
+  if (modal && modal.style.display === "block") {
+    displayCartItems();
+  }
 }
 
 // Update cart count
@@ -390,6 +395,392 @@ function updateCartCount() {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
   cartCount.textContent = totalItems;
 }
+
+// Toggle cart modal
+function toggleCart() {
+  const modal = document.getElementById("cart-modal");
+  if (modal.style.display === "block") {
+    modal.style.display = "none";
+  } else {
+    modal.style.display = "block";
+    displayCartItems();
+  }
+}
+
+// Display cart items
+function displayCartItems() {
+  const cartItemsContainer = document.querySelector(".cart-items");
+  const cartTotalElement = document.getElementById("cart-total");
+
+  if (cart.length === 0) {
+    cartItemsContainer.innerHTML = `
+      <div class="empty-cart">
+        <i class="fas fa-shopping-cart"></i>
+        <p>Your cart is empty</p>
+        <button class="btn-primary" onclick="toggleCart()">Continue Shopping</button>
+      </div>
+    `;
+    cartTotalElement.textContent = "0.00";
+    return;
+  }
+
+  cartItemsContainer.innerHTML = cart
+    .map(
+      (item, index) => `
+    <div class="cart-item">
+      <img src="${item.image}" alt="${item.name}" class="cart-item-image">
+      <div class="cart-item-details">
+        <h4>${item.name}</h4>
+        <p>${item.description}</p>
+        <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+        <div class="cart-item-quantity">
+          <button class="quantity-btn" onclick="updateQuantity(${index}, ${
+        item.quantity - 1
+      })">-</button>
+          <span>${item.quantity}</span>
+          <button class="quantity-btn" onclick="updateQuantity(${index}, ${
+        item.quantity + 1
+      })">+</button>
+          <button class="quantity-btn cart-item-remove" onclick="removeFromCart(${index})">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  `
+    )
+    .join("");
+
+  updateCartTotal();
+}
+
+// Update item quantity
+function updateQuantity(index, newQuantity) {
+  if (newQuantity <= 0) {
+    removeFromCart(index);
+    return;
+  }
+
+  cart[index].quantity = newQuantity;
+  updateCartCount();
+  displayCartItems();
+}
+
+// Remove item from cart
+function removeFromCart(index) {
+  const removedItem = cart[index];
+  cart.splice(index, 1);
+  updateCartCount();
+  displayCartItems();
+  showNotification(`${removedItem.name} removed from cart`);
+}
+
+// Update cart total
+function updateCartTotal() {
+  const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  document.getElementById("cart-total").textContent = total.toFixed(2);
+}
+
+// Handle checkout
+// Close cart when clicking outside
+document.addEventListener("click", function (event) {
+  const modal = document.getElementById("cart-modal");
+  const cartIcon = document.querySelector(".cart-icon");
+  const closeBtn = document.querySelector(".close-cart");
+
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+
+  if (closeBtn && event.target === closeBtn) {
+    modal.style.display = "none";
+  }
+});
+
+// Add event listener for checkout button
+document.addEventListener("DOMContentLoaded", function () {
+  const checkoutBtn = document.querySelector(".checkout-btn");
+  if (checkoutBtn) {
+    checkoutBtn.addEventListener("click", handleCheckout);
+  }
+});
+
+// Checkout functionality
+let currentStep = 1;
+let checkoutData = {};
+
+function handleCheckout() {
+  if (cart.length === 0) {
+    showNotification("Your cart is empty!");
+    return;
+  }
+
+  // Close cart modal and open checkout modal
+  document.getElementById("cart-modal").style.display = "none";
+  document.getElementById("checkout-modal").style.display = "block";
+
+  // Reset checkout
+  currentStep = 1;
+  checkoutData = {};
+  updateCheckoutProgress();
+  showCheckoutStep(1);
+}
+
+function updateCheckoutProgress() {
+  // Update progress steps
+  for (let i = 1; i <= 3; i++) {
+    const step = document.getElementById(`step-${i}`);
+    if (i <= currentStep) {
+      step.classList.add("active");
+    } else {
+      step.classList.remove("active");
+    }
+  }
+}
+
+function showCheckoutStep(step) {
+  // Hide all steps
+  document.querySelectorAll(".checkout-step").forEach((stepEl) => {
+    stepEl.classList.remove("active");
+  });
+
+  // Show current step
+  document
+    .getElementById(`${["shipping", "payment", "review"][step - 1]}-step`)
+    .classList.add("active");
+}
+
+function nextCheckoutStep() {
+  if (currentStep < 3) {
+    if (validateCurrentStep()) {
+      currentStep++;
+      updateCheckoutProgress();
+      showCheckoutStep(currentStep);
+
+      if (currentStep === 3) {
+        populateOrderReview();
+      }
+    }
+  }
+}
+
+function prevCheckoutStep() {
+  if (currentStep > 1) {
+    currentStep--;
+    updateCheckoutProgress();
+    showCheckoutStep(currentStep);
+  }
+}
+
+function validateCurrentStep() {
+  const currentStepEl = document.querySelector(".checkout-step.active");
+
+  if (currentStep === 1) {
+    // Validate shipping form
+    const requiredFields = currentStepEl.querySelectorAll("input[required]");
+    let isValid = true;
+
+    requiredFields.forEach((field) => {
+      if (!field.value.trim()) {
+        field.style.borderColor = "#e74c3c";
+        isValid = false;
+      } else {
+        field.style.borderColor = "#e0e0e0";
+      }
+    });
+
+    if (!isValid) {
+      showNotification("Please fill in all required fields");
+    }
+
+    return isValid;
+  }
+
+  if (currentStep === 2) {
+    // Validate payment form
+    const paymentMethod = document.querySelector(".payment-method.active")
+      .dataset.method;
+
+    if (paymentMethod === "card") {
+      const cardFields = document.querySelectorAll(
+        "#card-form input[required]"
+      );
+      let isValid = true;
+
+      cardFields.forEach((field) => {
+        if (!field.value.trim()) {
+          field.style.borderColor = "#e74c3c";
+          isValid = false;
+        } else {
+          field.style.borderColor = "#e0e0e0";
+        }
+      });
+
+      if (!isValid) {
+        showNotification("Please fill in all payment fields");
+      }
+
+      return isValid;
+    }
+  }
+
+  return true;
+}
+
+function populateOrderReview() {
+  // Populate order items
+  const reviewItems = document.getElementById("review-items");
+  reviewItems.innerHTML = cart
+    .map(
+      (item) => `
+    <div class="review-item">
+      <div class="review-item-info">
+        <img src="${item.image}" alt="${item.name}" class="review-item-image">
+        <div class="review-item-details">
+          <h6>${item.name}</h6>
+          <p>Quantity: ${item.quantity}</p>
+        </div>
+      </div>
+      <div class="review-item-price">$${(item.price * item.quantity).toFixed(
+        2
+      )}</div>
+    </div>
+  `
+    )
+    .join("");
+
+  // Calculate totals
+  const subtotal = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  const shipping = subtotal > 50 ? 0 : 9.99;
+  const tax = subtotal * 0.08;
+  const total = subtotal + shipping + tax;
+
+  document.getElementById("review-subtotal").textContent = subtotal.toFixed(2);
+  document.getElementById("review-shipping").textContent = shipping.toFixed(2);
+  document.getElementById("review-tax").textContent = tax.toFixed(2);
+  document.getElementById("review-total").textContent = total.toFixed(2);
+
+  // Populate shipping address
+  const formData = new FormData(document.getElementById("checkout-form"));
+  const address = `
+    ${formData.get("firstName")} ${formData.get("lastName")}<br>
+    ${formData.get("address")}<br>
+    ${formData.get("city")}, ${formData.get("zip")}<br>
+    ${
+      document.getElementById("country").options[
+        document.getElementById("country").selectedIndex
+      ].text
+    }
+  `;
+  document.getElementById("review-address").innerHTML = address;
+}
+
+function submitOrder(event) {
+  event.preventDefault();
+
+  // Simulate order processing
+  showNotification("Processing your order...");
+
+  // Here you would typically send the order to a backend
+  setTimeout(() => {
+    // Generate order number
+    const orderNumber = "MMA" + Date.now();
+
+    // Clear cart
+    cart = [];
+    updateCartCount();
+
+    // Close checkout modal
+    document.getElementById("checkout-modal").style.display = "none";
+
+    // Show success message
+    showOrderConfirmation(orderNumber);
+
+    // Reset form
+    document.getElementById("checkout-form").reset();
+    currentStep = 1;
+  }, 2000);
+}
+
+function showOrderConfirmation(orderNumber) {
+  const confirmationModal = document.createElement("div");
+  confirmationModal.className = "order-confirmation-modal";
+  confirmationModal.innerHTML = `
+    <div class="order-confirmation-content">
+      <div class="confirmation-header">
+        <i class="fas fa-check-circle"></i>
+        <h3>Order Confirmed!</h3>
+      </div>
+      <div class="confirmation-body">
+        <p>Thank you for your order! Your order number is:</p>
+        <div class="order-number">${orderNumber}</div>
+        <p>You will receive a confirmation email shortly with your order details.</p>
+        <button class="btn-primary" onclick="this.parentElement.parentElement.parentElement.remove()">Continue Shopping</button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(confirmationModal);
+
+  // Auto remove after 10 seconds
+  setTimeout(() => {
+    if (confirmationModal.parentNode) {
+      confirmationModal.remove();
+    }
+  }, 10000);
+}
+
+// Event listeners for checkout
+document.addEventListener("DOMContentLoaded", function () {
+  // Next step buttons
+  document.querySelectorAll(".next-step-btn").forEach((btn) => {
+    btn.addEventListener("click", nextCheckoutStep);
+  });
+
+  // Previous step buttons
+  document.querySelectorAll(".prev-step-btn").forEach((btn) => {
+    btn.addEventListener("click", prevCheckoutStep);
+  });
+
+  // Payment method selection
+  document.querySelectorAll(".payment-method").forEach((method) => {
+    method.addEventListener("click", function () {
+      document
+        .querySelectorAll(".payment-method")
+        .forEach((m) => m.classList.remove("active"));
+      this.classList.add("active");
+
+      const methodType = this.dataset.method;
+      document
+        .querySelectorAll(".payment-form")
+        .forEach((form) => form.classList.add("hidden"));
+      document.getElementById(`${methodType}-form`).classList.remove("hidden");
+    });
+  });
+
+  // Close checkout modal
+  document
+    .querySelector(".close-checkout")
+    .addEventListener("click", function () {
+      document.getElementById("checkout-modal").style.display = "none";
+    });
+
+  // Checkout form submission
+  document
+    .getElementById("checkout-form")
+    .addEventListener("submit", submitOrder);
+
+  // Close checkout on outside click
+  document.addEventListener("click", function (event) {
+    const modal = document.getElementById("checkout-modal");
+    if (event.target === modal) {
+      modal.style.display = "none";
+    }
+  });
+});
 
 // Show notification
 function showNotification(message) {
